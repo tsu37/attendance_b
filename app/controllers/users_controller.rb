@@ -1,8 +1,8 @@
 class UsersController < ApplicationController
   before_action :logged_in_user, only: [:index, :edit, :update, :destroy,
                                         :following, :followers]
-  before_action :correct_user,   only: [:edit, :update]
-  before_action :admin_user,     only: :destroy
+  before_action :correct_user,   only: [:edit, :update, :edit_basic_info]
+  before_action :admin_user,     only: [:destroy, :edit_basic_info]
 
   def index
     @users = User.paginate(page: params[:page])
@@ -44,6 +44,12 @@ class UsersController < ApplicationController
     User.find(params[:id]).destroy
     flash[:success] = "User deleted"
     redirect_to users_url
+  end
+  
+  # 基本情報の編集
+  def edit_basic_info
+    buybug
+    @user = current_user
   end
     
   private

@@ -1,16 +1,24 @@
-<% provide(:title, @user.name) %>
-<div class="row">
-  <aside class="col-md-4">
-    <section>
-      <h1>
-        <%= @user.name %>
-      </h1>
-    </section>
-    <section class="stats">
-      <%= render 'shared/stats' %>
-    </section>
-  </aside>
-  <div class="col-md-8">
-      <%= will_paginate @microposts %>
-  </div>
-</div>
+<table class="txt1 table table-bordered table-striped table-condensed table-status" border="2" rules="all">
+  <thead>
+    <tr height="50px">
+      <th class="table_header">
+        <%= link_to "←" %>
+        <%=  %>
+        <%= link_to "→" %>
+      </th>
+      <th class="table_header">指定勤務時間「」</th>
+      <th class="table_header" colspan="3">基本時間</th>
+      <th class="table_header">初日「」</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr height="30px">
+      <th class="table_header">所属: <%=@user.affiliation %></th>
+      <th class="table_header">氏名:<%= @user.name %> </th>
+      <th class="table_header">コード</th>
+      <th class="table_header">「」</th>
+      <th class="table_header">出勤日数「」</th>
+      <th class="table_header">締め「」</th>
+    </tr>
+  </tbody>
+</table>

@@ -120,10 +120,6 @@ footer {
   margin-right: 10px;
 }
 
-.gravatar_edit {
-  margin-top: 15px;
-}
-
 .stats {
   overflow: auto;
   margin-top: 0;
@@ -147,20 +143,8 @@ footer {
   }
 }
 
-.user_avatars {
-  overflow: auto;
-  margin-top: 10px;
-  .gravatar {
-    margin: 1px 1px;
-  }
-  a {
-    padding: 0;
-  }
-}
 
-.users.follow {
-  padding: 0;
-}
+
 
 /* forms */
 
@@ -216,39 +200,6 @@ input {
   }
 }
 
-/* microposts */
-
-.microposts {
-  list-style: none;
-  padding: 0;
-  li {
-    padding: 10px 0;
-    border-top: 1px solid #e8e8e8;
-  }
-  .user {
-    margin-top: 5em;
-    padding-top: 0;
-  }
-  .content {
-    display: block;
-    margin-left: 60px;
-    img {
-      display: block;
-      padding: 5px 0;
-    }
-  }
-  .timestamp {
-    color: $gray-light;
-    display: block;
-    margin-left: 60px;
-  }
-  .gravatar {
-    float: left;
-    margin-right: 10px;
-    margin-top: 5px;
-  }
-}
-
 aside {
   textarea {
     height: 100px;
@@ -261,4 +212,16 @@ span.picture {
   input {
     border: 0;
   }
+}
+
+/* table */
+.table_header {
+  font-weight: 400;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.table-body {
+  text-align: center;
 }
