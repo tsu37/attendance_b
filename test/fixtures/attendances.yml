@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  attendance_time: 2018-10-16 13:45:03
+  leaving_time: 2018-10-16 13:45:03
+  day: 2018-10-16
+  attendance_time_edit: 2018-10-16 13:45:03
+  leaving_time_edit: 2018-10-16 13:45:03
+  remarks: MyText
+
+two:
+  attendance_time: 2018-10-16 13:45:03
+  leaving_time: 2018-10-16 13:45:03
+  day: 2018-10-16
+  attendance_time_edit: 2018-10-16 13:45:03
+  leaving_time_edit: 2018-10-16 13:45:03
+  remarks: MyText

@@ -1,0 +1,68 @@
+<% provide(:title, @user.name) %>
+
+<%= form_tag edit_attendance_path, method: :post do %>
+  <%= hidden_field_tag :id, @user.id %>
+  <%= hidden_field_tag :first_day, @first_day %>
+  <table class="txt1 table table-bordered table-striped table-condensed table-status">
+    <thead>
+      <tr>
+        <th class="table-header">日付</th>
+        <th class="table-header">曜日</th>
+        <th class="table-header">出社</th>
+        <th class="table-header">退社</th>
+        <th class="table-header">在社時間</th>
+        <th class="table-header">備考</th>
+        <th class="table-header">残業指示</th>
+        <th class="table-header">指示者</th>        
+      </tr>
+    </thead>
+    <tbody>
+        <% @attendances.each do |attendance| %>
+          <%= fields_for("attendance[]", attendance) do |f| %>
+            <tr>
+              <td class="table-body"><%= attendance.day.month %>/<%= attendance.day.day %></td>
+              <td class="table-body"><%= @day_of_week[attendance.day.wday] %></td>
+              
+                <!-- 出社時間の表示  -->
+                <td class="table-body">
+                   <%= f.time_field :attendance_time ,{class: "form-control bootstrap-date-only-width attendance_time"} %>
+                </td>
+                
+                <!-- 退社時間の表示  -->
+                <td class="table-body">
+                  <%= f.time_field  :leaving_time, {class: "form-control bootstrap-date-only-width leaving_time"} %>
+                </td>
+
+                <!-- 在社時間の表示  -->
+                <td class="table-body">
+                  <% if !attendance.attendance_time.nil? && !attendance.leaving_time.nil? %>
+                    <%= format("%.2f", (attendance.leaving_time - attendance.attendance_time)/3600) %>
+                  <% end %>
+                </td>
+              
+              <!-- 備考の表示  -->
+              <td class="table-body">
+                <%= f.text_field  :remarks, class: 'form-control'%>
+              </td>
+              
+              <!-- 残業指示の表示  -->
+              <td class="table-body">
+                <%= f.text_field  :remarks, class: 'form-control'%>
+              </td>
+              
+              <!-- 指示者の表示  -->
+              <td class="table-body">
+                <%= f.text_field  :remarks, class: 'form-control'%>
+              </td>
+            </tr>
+            <% end %>
+          <% end %>
+    </tbody>
+  </table>
+  <div class="center">
+
+    <%= link_to "キャンセル", user_url(@user, params: { id: @user.id, first_day: @first_day }), style:"width:200px; color:white", class:"btn btn-lg btn-primary" %>
+    <%= submit_tag "編集を保存する", style:"width:200px", class: "btn btn-lg btn-primary" %>
+<% end %>
+
+  </div>

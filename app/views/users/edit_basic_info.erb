@@ -1,0 +1,20 @@
+<% provide(:title, @user.name) %>
+<h1>基本情報の編集</h1>
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <%= form_for(@user, remote: true, html:{:id => ''}) do |f| %>
+      <%= render 'shared/error_messages', object: f.object %>
+
+        <%= f.label :design_work_hour, "指定勤務時間"%>
+        <%= f.time_field :design_work_hour, class: 'form-control' %>
+        
+        <%= f.label :basic_work_hour, "基本勤務時間"%>
+        <%= f.time_field :basic_work_hour, class: 'form-control' %>
+        
+        <%= f.submit '編集する', class: "btn btn-primary"%>
+        
+        <% end %>     
+        
+  </div>
+</div>
