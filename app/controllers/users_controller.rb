@@ -52,7 +52,12 @@ class UsersController < ApplicationController
   end
 
   def edit_basic_info
-      @user = current_user
+    @user = User.find(1)
+      if params[:user].present?
+        design_work_hour = params[:user][:design_work_hour]
+        basic_work_hour = params[:user][:basic_work_hour]
+        @user.update(design_work_hour: design_work_hour, basic_work_hour: basic_work_hour)
+      end
   end
   
   def new
