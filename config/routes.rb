@@ -10,8 +10,9 @@ Rails.application.routes.draw do
   # get '/attendance_update', to: 'attendances#attendance_update'  
   # patch '/attendance_update', to: 'attendances#attendance_update' 
   
-  # post '/attendance', to: 'attendances#edit', as: 'edit_attendance'
-  # get '/attendance', to: 'attendances#edit', as: 'edit_attendance'
+  post '/attendance', to: 'attendances#attendance_update', as: 'attendance'
+  get '/attendance', to: 'attendances#edit', as: 'edit_attendance'
+  post '/leaving_update', to: 'attendances#leaving_update', as: 'leaving'
 
   
   get '/basic_info',   to: 'users#edit_basic_info'

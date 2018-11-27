@@ -1,29 +1,45 @@
 class AttendancesController < ApplicationController
-    
   # 出勤・退社ボタン押下
   def attendance_update
     # 更新する勤怠データを取得
     @attendance = Attendance.find(params[:attendance][:id])
     # 更新パラメータを文字列で取得する
-    @update_type = params[:attendance][:update_type]
+    @attendance_time = params[:attendance][:attendance_time]
     
-    if @update_type == 'attendance_time'
+    if @attendance_time == params[:attendance][:attendance_time]
       # 出社時刻を更新 
-      if !@attendance.update_column(:attendance_time, DateTime.new(DateTime.now.year, DateTime.now.month, DateTime.now.day,DateTime.now.hour,DateTime.now.min,0))
+      if !@attendance.update_column(:attendance_time, DateTime.now)
         flash[:error] = "出社時間の入力に失敗しました"
       end
-    elsif @update_type == 'leaving_time'
+    end
+    #出社・退社押下した日付及び現在のuser idを@userに返す
+    @user = @attendance.user
+    attendance_time = Time.new(Time.now.year,Time.now.month,Time.now.day,Time.new.hour,Time.now.min,00)
+    @attendance.update(attendance_time: attendance_time)
+    redirect_to @user
+  end
+  
+  
+  def leaving_update
+    # 更新する勤怠データを取得
+    @attendance = Attendance.find(params[:attendance][:id])
+    # 更新パラメータを文字列で取得する
+    @leaving_time = params[:attendance][:leaving_time]
+    if @leaving_time == params[:attendance][:leaving_time]
       # 退社時刻を更新 
-      if !@attendance.update_column(:leaving_time, DateTime.new(DateTime.now.year, DateTime.now.month, DateTime.now.day,DateTime.now.hour,DateTime.now.min,0))
+      if !@attendance.update_column(:leaving_time, DateTime.now)
         flash[:error] = "退社時間の入力に失敗しました"
       end
     end  
     #出社・退社押下した日付及び現在のuser idを@userに返す
-    @user = User.find(params[:attendance][:user_id])
+    @user = @attendance.user
+    leaving_time = Time.new(Time.now.year,Time.now.month,Time.now.day,Time.new.hour,Time.now.min,00)
+    @attendance.update(leaving_time: leaving_time)
     redirect_to @user
   end
   
   def edit
+    # byebug
     if current_user.admin?
       @user = current_user
     end

@@ -13,7 +13,7 @@
      </th>
      
       <th class="table-header">
-        指定勤務時間:<%= format("%.2f", ((@basic_info.designated_work_hour.hour*60.0) + @basic_info.designated_work_hour.min)/60) if !@basic_info.nil? && !@basic_info.designated_work_hour.nil? %></th>
+        指定勤務時間:<%= format("%.2f", ((@basic_info.design_work_hour.hour*60.0) + @basic_info.design_work_hour.min)/60) if !@basic_info.nil? && !@basic_info.design_work_hour.nil? %></th>
       <th colspan="3" class="table-header">
         基本時間:<%= format("%.2f", ((@basic_info.basic_work_hour.hour*60.0) + @basic_info.basic_work_hour.min)/60) if !@basic_info.nil? && !@basic_info.basic_work_hour.nil? %></th>
       </th>
@@ -34,7 +34,7 @@
   </thead>
 </table>
 <!--attendance_edit_pathに、userのidと今月の値を渡す-->
-<%= link_to "勤怠を編集", edit_attendance_url(@attendance, params: { id: @user.id, first_day: @first_day }), :style=>"color:white;", class: "btn btn-sm btn-primary" if current_user == @user %>
+<%= link_to "勤怠を編集", edit_attendance_path(@attendances, params: { id: @user.id, first_day: @first_day }), :style=>"color:white;", class: "btn btn-sm btn-primary" if current_user == @user %>
 <table class="table table-bordered table-striped table-condensed">
   <thead>
     <tr>
@@ -60,9 +60,6 @@
     <!-- users_controller.rbの@attendancesの中身を見にいく-->
     <% total_present_time = 0 %>
     <% @attendances.each do |attendance| %>
-      <%= form_for(attendance, url: attendance_update_path ) do |f| %>
-      <%= f.hidden_field :user_id, :value => "#{@user.id}"%>
-      <%= f.hidden_field :id, :value => "#{attendance.id}"%>
         <tr>
           <!--日付-->
           <td class="table-body">
@@ -75,6 +72,9 @@
           <!-- 出社時間の表示  -->
           <td class="table-body">
             <%= attendance.attendance_time.hour if !attendance.attendance_time.nil? %>
+              <% if attendance.day == DateTime.new(DateTime.now.year, DateTime.now.month, DateTime.now.day) && attendance.attendance_time.nil?%>
+              <%= link_to "出社", attendance_path(params: {attendance: {id:attendance.id , attendance_time:DateTime.current}}), :method => :post %>
+              <% end %>                           
           </td>
           <td class="table-body">
             <%= attendance.attendance_time.min if !attendance.attendance_time.nil? %>
@@ -82,13 +82,14 @@
           <td class="table-body">
             <!-- 自身の勤怠で出社時間と退社時間が空なら表示  -->
             <% if current_user == @user && attendance.attendance_time.nil? && attendance.leaving_time.nil? && attendance.day == Date.today %>
-              <%= f.hidden_field :update_type, :value => "attendance_time"%>
-              <%= f.submit "出社", class: "btn btn-sm btn-primary" %>
             <% end %>
           </td>
           <!-- 退社時間の表示  -->
           <td class="table-body">
             <%= attendance.leaving_time.hour if !attendance.leaving_time.nil? %>
+              <% if attendance.day == DateTime.new(DateTime.now.year, DateTime.now.month, DateTime.now.day)  && attendance.leaving_time.nil?%>
+              <%= link_to "退社", leaving_path(params: {attendance: {id:attendance.id , leaving_time:DateTime.current}}), :method => :post %>
+              <% end %>
           </td>
           <td class="table-body">
             <%= attendance.leaving_time.min if !attendance.leaving_time.nil? %>
@@ -96,16 +97,12 @@
           <td class="table-body">
             <!-- 出社時間入力済みかつ退社時間が空なら表示  -->
             <% if current_user == @user && !attendance.attendance_time.nil? && attendance.leaving_time.nil? && attendance.day == Date.today %>
-              <%= f.hidden_field :update_type, :value => "leaving_time"%>
-              <%= f.submit "退社", class: "btn btn-sm btn-primary" %>
             <% end %>
           </td>
           
           <!-- 在社時間の表示  -->
           <td class="table-body">
             <% if !attendance.attendance_time.nil? && !attendance.leaving_time.nil? %>
-            <%= f.hidden_field :update_type, :value => "attendance_time"%>
-             <%= f.hidden_field :update_type, :value => "leaving_time"%>
              
              
              <% present_time = (attendance.leaving_time - attendance.attendance_time) / 3600 %>
@@ -119,7 +116,6 @@
           <td class="table-body">
           </td>
         </tr>
-       <% end %>
     <% end %>
     
          <tr>

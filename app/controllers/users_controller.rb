@@ -28,7 +28,7 @@ class UsersController < ApplicationController
     end
     #最終日を取得する
     @last_day = @first_day.end_of_month
-
+# byebug
     # 今月の初日から最終日の期間分を取得
     (@first_day..@last_day).each do |date|
       # 該当日付のデータがないなら作成する
