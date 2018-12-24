@@ -74,42 +74,35 @@
           <td class="table-body">
             <%= attendance.attendance_time.hour if !attendance.attendance_time.nil? %>
               <% if attendance.day == DateTime.new(DateTime.now.year, DateTime.now.month, DateTime.now.day) && attendance.attendance_time.nil?%>
-              <%= link_to "出社", attendance_path(params: {attendance: {id:attendance.id , attendance_time:DateTime.current}}), :method => :post %>
+               <%= link_to "出社", attendance_path(params: {attendance: {id:attendance.id , attendance_time:DateTime.current}}), :method => :post %>
               <% end %>                           
           </td>
           <td class="table-body">
             <%= attendance.attendance_time.min if !attendance.attendance_time.nil? %>
           </td>
+          <td class="table-body">
 
+          </td>
           <!-- 退社時間の表示  -->
+          <td class="table-body">
+            <%= attendance.leaving_time.hour if !attendance.leaving_time.nil? %>
+             <% if attendance.day == Date.current && attendance.attendance_time.present? && attendance.leaving_time.nil? %>
+                <%= link_to "退社", leaving_path(params: {attendance: {id:attendance.id , leaving_time:DateTime.current}}), :method => :post %>
+             <% end %>
+          </td>
           <td class="table-body">
             <%= attendance.leaving_time.min if !attendance.leaving_time.nil? %>
           </td>
           <td class="table-body">
 
           </td>
-          <td class="table-body">
 
-          </td>
-          <td class="table-body">
-            <%= attendance.leaving_time.hour if !attendance.leaving_time.nil? %>
-            <%#= attendance.leaving_time.hour if !attendance.leaving_time.nil? %>
-              <%# if (attendance.leaving_time == Date.today) && attendance.day.atenndance_time.present? && attendance.day.leaving_time.nil? %>
-              <% if attendance.day == DateTime.new(DateTime.now.year, DateTime.now.month, DateTime.now.day) %>
-                <%= link_to "退社", leaving_path(params: {attendance: {id:attendance.id , leaving_time:DateTime.current}}), :method => :post %>
-              <% end %>
-          </td>
-          
           <!-- 在社時間の表示  -->
           <td class="table-body">
             <% if !attendance.attendance_time.nil? && !attendance.leaving_time.nil? %>
-             
-             
              <% present_time = (attendance.leaving_time - attendance.attendance_time) / 3600 %>
              <% total_present_time += present_time %>
-             
              <%=format("%.2f", present_time) %>
-             
             <% end %>
           </td>
           <!-- 備考の表示  -->
