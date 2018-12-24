@@ -14,9 +14,9 @@
      </th>
      
       <th class="table-header">
-        指定勤務時間:<%= format("%.2f", ((@basic_info.design_work_hour.hour*60.0) + @basic_info.design_work_hour.min)/60) if !@basic_info.nil? && !@basic_info.design_work_hour.nil? %></th>
+        指定勤務時間:<%= format("%.2f", ((@user.design_work_hour.hour*60.0) + @user.design_work_hour.min)/60) if !@user.nil? && !@user.design_work_hour.nil? %></th>
       <th colspan="3" class="table-header">
-        基本時間:<%= format("%.2f", ((@basic_info.basic_work_hour.hour*60.0) + @basic_info.basic_work_hour.min)/60) if !@basic_info.nil? && !@basic_info.basic_work_hour.nil? %></th>
+        基本時間:<%= format("%.2f", ((@user.basic_work_hour.hour*60.0) + @user.basic_work_hour.min)/60) if !@user.nil? && !@user.basic_work_hour.nil? %></th>
       </th>
      
       
