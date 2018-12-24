@@ -68,4 +68,9 @@ class AttendancesController < ApplicationController
     # 表示期間の勤怠データを日付順にソートして取得
     @attendances = @user.attendances.where('day >= ? and day <= ?', @first_day, @last_day).order("day ASC")
   end
+  
+  def edit_all
+    @user = User.find(params[:id])
+    
+  end
 end
