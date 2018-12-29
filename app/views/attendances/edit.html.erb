@@ -18,7 +18,7 @@
     </thead>
     <tbody>
         <% @attendances.each do |attendance| %>
-          <%= fields_for("attendance[]", attendance) do |f| %>
+          <%= fields_for("attendances[]", attendance) do |f| %>
             <tr>
               <td class="table-body"><%= attendance.day.month %>/<%= attendance.day.day %></td>
               <td class="table-body"><%= @day_of_week[attendance.day.wday] %></td>

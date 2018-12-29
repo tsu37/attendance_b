@@ -17,6 +17,9 @@ class UsersController < ApplicationController
     # 曜日表示用に使用する
     @day_of_week = %w[日 月 火 水 木 金 土]
     
+    #基本情報
+    @basic_info = BasicInfo.find_by(id: 1)
+    
     # 既に表示月があれば、表示月を取得する
     if !params[:first_day].nil?
       @first_day = Date.parse(params[:first_day])
@@ -26,7 +29,6 @@ class UsersController < ApplicationController
     end
     #最終日を取得する
     @last_day = @first_day.end_of_month
-# byebug
     # 今月の初日から最終日の期間分を取得
     (@first_day..@last_day).each do |date|
       # 該当日付のデータがないなら作成する

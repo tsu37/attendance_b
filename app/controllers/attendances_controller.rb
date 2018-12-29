@@ -39,7 +39,6 @@ class AttendancesController < ApplicationController
   end
   
   def edit
-    # byebug
     if current_user.admin?
       @user = current_user
     end
@@ -71,6 +70,19 @@ class AttendancesController < ApplicationController
   
   def edit_all
     @user = User.find(params[:id])
-    
+    params[:attendances].each do |id, item|
+          attendance = Attendance.find(id)
+          #当日以降の編集はadminユーザのみ
+          if item["attendance_time"].blank? && item["attendance_time"].blank?
+          # 両方空はそもそも入力していないので、カウント外
+          elsif (attendance.day > Date.current) && !current_user.admin?
+          elsif item["attendance_time"].blank? || item["attendance_time"].blank?
+          elsif item["attendance_time"].to_s > item["leaving_time"].to_s
+          end
+          item.permit
+          attendance.update(attendance_time: item[:attendance_time], leaving_time: item["leaving_time"], remarks: item[:remarks])
+    end
+    flash[:success] = '勤怠時間を更新しました。'
+    redirect_to user_url(@user, params:{ id: @user.id, first_day: params[:first_day]}) and return
   end
 end
