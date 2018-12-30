@@ -3,5 +3,5 @@ class ChangeColumnToAttendance < ActiveRecord::Migration[5.1]
     add_column :attendances, :user_id, :integer
   end
   
-  add_foreign_key :attendances, :users
+  # add_foreign_key :attendances, :users
 end
