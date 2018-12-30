@@ -4,6 +4,7 @@
 <div class="row">
   <div class="col-md-6 col-md-offset-3">
     <%= form_for @user, url: basic_info_path do |f| %>
+      <%= render 'shared/error_messages', object: f.object %>
 
         <%= f.label :design_work_hour, "指定勤務時間"%>
         <%= f.time_field :design_work_hour, class: 'form-control' %>

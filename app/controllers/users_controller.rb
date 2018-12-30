@@ -57,6 +57,8 @@ class UsersController < ApplicationController
         design_work_hour = params[:user][:design_work_hour]
         basic_work_hour = params[:user][:basic_work_hour]
         @user.update(design_work_hour: design_work_hour, basic_work_hour: basic_work_hour)
+        flash[:success] = "基本情報を更新しました。"
+        redirect_to @user
       end
   end
   

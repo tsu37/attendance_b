@@ -5,10 +5,6 @@ Rails.application.routes.draw do
   get    '/login',   to: 'sessions#new'
   post   '/login',   to: 'sessions#create'
   delete '/logout',  to: 'sessions#destroy'
-
-  # post '/attendance_update', to: 'attendances#attendance_update'
-  # get '/attendance_update', to: 'attendances#attendance_update'  
-  # patch '/attendance_update', to: 'attendances#attendance_update' 
   
   get '/attendance_edit', to: 'attendances#edit', as: 'edit_attendance'
   post '/attendance_edit', to: 'attendances#edit_all', as: 'edit_attendance_all'
