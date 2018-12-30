@@ -70,19 +70,31 @@ class AttendancesController < ApplicationController
   
   def edit_all
     @user = User.find(params[:id])
-    params[:attendances].each do |id, item|
-          attendance = Attendance.find(id)
-          #当日以降の編集はadminユーザのみ
-          if item["attendance_time"].blank? && item["attendance_time"].blank?
-          # 両方空はそもそも入力していないので、カウント外
-          elsif (attendance.day > Date.current) && !current_user.admin?
-          elsif item["attendance_time"].blank? || item["attendance_time"].blank?
-          elsif item["attendance_time"].to_s > item["leaving_time"].to_s
-          end
-          item.permit
-          attendance.update(attendance_time: item[:attendance_time], leaving_time: item["leaving_time"], remarks: item[:remarks])
-    end
-    flash[:success] = '勤怠時間を更新しました。'
-    redirect_to user_url(@user, params:{ id: @user.id, first_day: params[:first_day]}) and return
+      params[:attendances].each do |id, item|
+            attendance = Attendance.find(id)
+
+            #出社時間と退社時間の両方の存在を確認
+            if item["attendance_time"].blank? && item["leaving_time"].blank?
+              flash[:warning] = '一部編集が無効となった項目があります。'
+              
+            #当日以降の編集はadminユーザのみ      
+            elsif (attendance.day > Date.current) && !current_user.admin?
+              flash[:warning] = '当日以降の編集は管理者編集可能です'
+              
+            # 当日以降の編集はadminユーザのみ
+            elsif item["attendance_time"].blank? || item["attendance_time"].blank?
+              flash[:warning] = '明日以降の勤怠編集は出来ません。'
+            
+            #出社時間 > 退社時間ではないか
+            elsif item["attendance_time"].to_s > item["leaving_time"].to_s
+              flash[:warning] = '出社時間より退社時間が早い項目がありました'
+              
+            else
+              item.permit
+              attendance.update(attendance_time: item[:attendance_time], leaving_time: item["leaving_time"], remarks: item[:remarks])
+              flash[:success] = '勤怠時間を更新しました。'
+            end
+            redirect_to user_url(@user, params:{ id: @user.id, first_day: params[:first_day]}) and return
+      end
   end
 end
