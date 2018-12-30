@@ -78,12 +78,8 @@ class AttendancesController < ApplicationController
               flash[:warning] = '一部編集が無効となった項目があります。'
               
             #当日以降の編集はadminユーザのみ      
-            elsif (attendance.day > Date.current) && !current_user.admin?
-              flash[:warning] = '当日以降の編集は管理者編集可能です'
-              
-            # 当日以降の編集はadminユーザのみ
-            elsif item["attendance_time"].blank? || item["attendance_time"].blank?
-              flash[:warning] = '明日以降の勤怠編集は出来ません。'
+            elsif (attendance.day > Date.current) 
+              flash[:warning] = '当日以降の編集はできません'
             
             #出社時間 > 退社時間ではないか
             elsif item["attendance_time"].to_s > item["leaving_time"].to_s
