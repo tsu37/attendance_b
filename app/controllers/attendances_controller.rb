@@ -69,28 +69,29 @@ class AttendancesController < ApplicationController
   end
   
   def edit_all
+    # byebug
     @user = User.find(params[:id])
-      params[:attendances].each do |id, item|
-            attendance = Attendance.find(id)
-
-            #出社時間と退社時間の両方の存在を確認
-            if item["attendance_time"].blank? && item["leaving_time"].blank?
-              flash[:warning] = '一部編集が無効となった項目があります。'
-              
-            #当日以降の編集はadminユーザのみ      
-            elsif (attendance.day > Date.current) 
-              flash[:warning] = '当日以降の編集はできません'
-            
-            #出社時間 > 退社時間ではないか
-            elsif item["attendance_time"].to_s > item["leaving_time"].to_s
-              flash[:warning] = '出社時間より退社時間が早い項目がありました'
-              
-            else
-              item.permit
-              attendance.update(attendance_time: item[:attendance_time], leaving_time: item["leaving_time"], remarks: item[:remarks])
-              flash[:success] = '勤怠時間を更新しました。'
-            end
-            redirect_to user_url(@user, params:{ id: @user.id, first_day: params[:first_day]}) and return
+    error_count = attendances_check
+    if error_count > 0 
+      flash[:warning] = '編集項目にエラーがあります。'
+      redirect_to edit_attendance_path(@attendances, params: { id: @user.id, first_day: @first_day }) and return
+      
+    end
+    
+    params[:attendances].each do |id, item|
+      attendance = Attendance.find(id)
+      # byebug
+      attendances_check()
+      if error_count = 0
+        item.permit
+        attendance.update_attributes(
+        attendance_time: item["attendance_time"],
+        leaving_time: item["leaving_time"],
+        remarks: item["remarks"])
+        flash[:success] = '勤怠時間を更新しました。'
+      else return
       end
+    end
+    redirect_to user_url(@user, params:{ id: @user.id, first_day: params[:first_day]}) and return
   end
 end
