@@ -7,7 +7,7 @@ class AttendancesController < ApplicationController
     @attendance_time = params[:attendance][:attendance_time]
     
     if @attendance_time == params[:attendance][:attendance_time]
-      # 出社時刻を更新 
+      # 出社時刻を更新
       if !@attendance.update_column(:attendance_time, DateTime.now)
         flash[:error] = "出社時間の入力に失敗しました"
       end
@@ -26,11 +26,11 @@ class AttendancesController < ApplicationController
     # 更新パラメータを文字列で取得する
     @leaving_time = params[:attendance][:leaving_time]
     if @leaving_time == params[:attendance][:leaving_time]
-      # 退社時刻を更新 
+      # 退社時刻を更新
       if !@attendance.update_column(:leaving_time, DateTime.now)
         flash[:error] = "退社時間の入力に失敗しました"
       end
-    end  
+    end
     #出社・退社押下した日付及び現在のuser idを@userに返す
     @user = @attendance.user
     leaving_time = Time.new(Time.now.year,Time.now.month,Time.now.day,Time.new.hour,Time.now.min,00)
@@ -43,6 +43,7 @@ class AttendancesController < ApplicationController
       @user = current_user
     end
     @user = User.find(params[:id])
+
     # 曜日表示用に使用する
     @day_of_week = %w[日 月 火 水 木 金 土]
     
@@ -75,7 +76,6 @@ class AttendancesController < ApplicationController
     if error_count > 0 
       flash[:warning] = '編集項目にエラーがあります。'
       redirect_to edit_attendance_path(@attendances, params: { id: @user.id, first_day: @first_day }) and return
-      
     end
     
     params[:attendances].each do |id, item|
