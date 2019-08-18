@@ -20,4 +20,8 @@ resources :attendance
   resources :users do
     get 'attendance_index', to: 'users#attendance_index'
   end
+  
+  # 出勤中社員の一覧
+  get '/user_attendance_list', to: 'users#attendance_list', as: 'user_attendance_list'
+  
 end

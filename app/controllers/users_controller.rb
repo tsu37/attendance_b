@@ -95,6 +95,21 @@ class UsersController < ApplicationController
     flash[:success] = "ユーザーを削除しました。"
     redirect_to users_url
   end
+  
+  def attendance_list
+    # 更新する勤怠データを取得
+    @now_users = []
+    User.all.each do |user|
+    if user.attendances.
+      any?{|a|
+       ( a.day == Date.today &&
+         !a.attendance_time.blank? &&
+         a.leaving_time.blank? )
+        }
+     @now_users.push(user.user_id,user.name) 
+    end
+   end
+  end
 
   private
 
