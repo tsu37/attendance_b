@@ -100,14 +100,14 @@ class UsersController < ApplicationController
     # 更新する勤怠データを取得
     @now_users = []
     User.all.each do |user|
-    if user.attendances.
-      any?{|a|
-       ( a.day == Date.today &&
-         !a.attendance_time.blank? &&
-         a.leaving_time.blank? )
-        }
-     @now_users.push(user.user_id,user.name) 
-    end
+      if user.attendances.any?{|a|
+         ( a.day == Date.today &&
+           !a.attendance_time.blank? &&
+           a.leaving_time.blank? )
+          }
+        @now_users << user
+        # @now_users[user.id] = user.name
+      end
    end
   end
 

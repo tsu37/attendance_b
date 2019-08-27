@@ -11,13 +11,13 @@
   </thead>
   <tbody>
 　　<!--controllerで定義した@now_usersをeachで回すだけで表示ができる。-->
-    <% @now_users.each do |employee_number, name| %>
+    <% @now_users.each do |nu| %>
       <tr>
         <td class="table-body">
-          <%= employee_number %>
+          <%= nu.id %>
         </td>
         <td class="table-body">
-          <%= name %>
+          <%= nu.name %>
         </td>
       </tr>
     <% end %>
