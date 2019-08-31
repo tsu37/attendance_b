@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
-  before_action :logged_in_user, only: [:index, :edit, :update, :destroy]
-  before_action :correct_user,   only: [:edit, :update]
-  before_action :admin_user,     only: [:destroy, :edit_basic_info, :update_basic_info, :index]
+  before_action :logged_in_user, only: [:index, :edit, :update, :edit_basic_info, :destroy]
+  before_action :admin_or_correct_user,   only: [:edit, :update]
+  before_action :admin_user,     only: [:index, :edit_basic_info, :update_basic_info, :destroy]
 
   def index
     @users = User.paginate(page: params[:page])
@@ -78,7 +78,6 @@ class UsersController < ApplicationController
   end
 
   def edit
-      @user = User.find_by(id: params[:id])
   end
 
   def update
@@ -106,9 +105,39 @@ class UsersController < ApplicationController
            a.leaving_time.blank? )
           }
         @now_users << user
-        # @now_users[user.id] = user.name
       end
-   end
+  end
+
+  # 基本情報の編集
+  def edit_basic_info
+    # 1つしかないので先頭を取得
+    @basic_info = BasicInfo.find_by(id: 1)
+    # なければ作成する
+    if @basic_info.nil?
+      @basic_info = BasicInfo.new
+      @basic_info.save
+    end
+  end
+   
+    # 基本情報の更新
+  def update_basic_info
+    # 1つしかないので先頭を更新
+    @basic_info = BasicInfo.find_by(id: 1)
+    if !@basic_info.nil?
+      if @basic_info.update_attributes(basic_info_params)
+        flash[:success] = "基本情報を更新しました"
+      else
+        flash[:success] = "基本情報の更新に失敗しました"
+      end
+    else
+      flash[:success] = "更新元の情報が存在しないため失敗しました"
+    end
+    render 'edit_basic_info'
+  end 
+   
+   
+   
+   
   end
 
   private
@@ -129,14 +158,22 @@ class UsersController < ApplicationController
       end
     end
     
-        # 正しいユーザーかどうか確認
+    # 正しいユーザーかどうか確認
     def correct_user
       @user = User.find(params[:id])
       redirect_to(root_url) unless current_user?(@user)
     end
     
-        # 管理者かどうか確認
+    # 管理者かどうか確認
     def admin_user
      redirect_to(root_url) unless current_user.admin?
+    end
+    
+    # 正しいユーザーor管理者かどうか確認
+    def admin_or_correct_user
+      @user = User.find(params[:id])
+      if !current_user?(@user) && !current_user.admin?
+        redirect_to(root_url)
+      end
     end
 end
