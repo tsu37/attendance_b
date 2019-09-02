@@ -4,7 +4,8 @@ class UsersController < ApplicationController
   before_action :admin_user,     only: [:index, :edit_basic_info, :update_basic_info, :destroy]
 
   def index
-    @users = User.paginate(page: params[:page])
+    # @users = User.paginate(page: params[:page])
+    @users = User.where(activated: true).paginate(page: params[:page]).search(params[:search])
   end
   
   def show
