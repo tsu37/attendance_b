@@ -16,9 +16,14 @@ Rails.application.routes.draw do
   post '/basic_info',   to: 'users#edit_basic_info'
   patch'/basic_info',   to: 'users#edit_basic_info'
 
-resources :attendance
+  resources :attendance
+    resources :users do
+      get 'attendance_index', to: 'users#attendance_index'
+    end
+
+  # ユーザ関係
   resources :users do
-    get 'attendance_index', to: 'users#attendance_index'
+    collection { post :import }
   end
   
   # 出勤中社員の一覧
