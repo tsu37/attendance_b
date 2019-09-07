@@ -6,6 +6,8 @@
   <%= submit_tag "CSVをインポート" ,:style=>"color:white;", class: "btn btn-sm btn-primary"%>
 <% end %>
 
+<%= link_to "CSV出力", users_path(format: :csv), class: "btn btn-primary" %>
+
 <p>ユーザー検索</p>
 <%= form_tag(users_path, :method => 'get' ) do %>
   <%= text_field_tag :search %>
