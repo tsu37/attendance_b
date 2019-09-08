@@ -5,17 +5,7 @@ class UsersController < ApplicationController
 
   def index
     # @users = User.paginate(page: params[:page])
-    # @users = User.where(activated: true).paginate(page: params[:page]).search(params[:search])
-    @user = User.all
-    respond_to do |format|
-      format.html do
-        @users = User.where(activated: true).paginate(page: params[:page]).search(params[:search])
-      end
-      format.csv do
-        @users = User.where(activated: true).paginate(page: params[:page]).search(params[:search])
-        send_data render_to_string, filename: "hoge.csv", type: :csv
-      end
-    end
+    @users = User.where(activated: true).paginate(page: params[:page]).search(params[:search])
   end
   
   def show
