@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190829102702) do
+ActiveRecord::Schema.define(version: 20190908101107) do
 
   create_table "attendances", force: :cascade do |t|
     t.datetime "attendance_time"
@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 20190829102702) do
     t.datetime "updated_at", null: false
     t.integer "authorizer_user_id"
     t.integer "user_id"
+    t.string "instructor"
   end
 
   create_table "basic_infos", force: :cascade do |t|

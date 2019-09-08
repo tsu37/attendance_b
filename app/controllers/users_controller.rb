@@ -59,8 +59,43 @@ class UsersController < ApplicationController
       @work_sum += attendance.leaving_time - attendance.attendance_time
     end
     @work_sum /= 3600
-    
   end
+  def att_export
+    # byebug
+    @user = User.find(params[:id])
+    # @user = User.all
+    # 曜日表示用に使用する
+    @day_of_week = %w[日 月 火 水 木 金 土]
+    # 基本情報取得
+    @basic_info = BasicInfo.find_by(id: 1)
+    # 表示月があれば取得する
+    if !params[:first_day].nil?
+      @first_day = Date.parse(params[:first_day])
+    else
+      # ないなら今月分を表示する
+      @first_day = Date.new(Date.today.year, Date.today.month, 1)
+    end
+    @last_day = @first_day.end_of_month
+    # 表示期間の勤怠データを日付順にソートして取得
+    @attendances = @user.attendances.where('day >= ? and day <= ?', @first_day, @last_day).order("day ASC")
+    # 出勤日数を取得
+    @attendance_days = @attendances.where.not(attendance_time: nil, leaving_time: nil).count
+
+    # 在社時間の総数を取得
+    @work_sum = 0
+    @attendances.where.not(attendance_time: nil, leaving_time: nil).each do |attendance|
+      @work_sum += attendance.leaving_time - attendance.attendance_time
+    end
+    @work_sum /= 3600
+
+    # CSV出力ファイル名を指定
+    respond_to do |format|
+      format.csv do
+        send_data render_to_string, filename: "#{@first_day.strftime("%Y年%m月")}_#{@user.name}.csv", type: :csv
+      end
+    end
+  end
+  
 
   def edit_basic_info
     @user = User.find(1)
@@ -117,6 +152,7 @@ class UsersController < ApplicationController
           }
         @now_users << user
       end
+    end
   end
 
   # 基本情報の編集
@@ -146,9 +182,18 @@ class UsersController < ApplicationController
     render 'edit_basic_info'
   end 
    
-   
-   
-   
+  def csv_import
+    if params[:csv_file].blank?
+      flash[:danger] = "読み込むCSVを選択してください。"
+      redirect_to users_url
+    elsif File.extname(params[:csv_file].original_filename) != ".csv"
+      flash[:danger] = "csvファイルのみ読み込み可能です。"
+      redirect_to users_url
+    else
+      msg = User.import(params[:csv_file])
+      msg == "登録完了" ? flash[:success] = msg : flash[:danger] = msg
+      redirect_to users_url
+    end 
   end
 
   private
