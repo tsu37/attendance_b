@@ -62,8 +62,55 @@
       <tr>
         <!-- 残業申請 -->
         <td class="table-body">
-        <button type = "button" class= "btn-primary btn-sm" data-toggle="modal" data-target=#Modal>残業申請</button>
-        <div class="modal fade" id="Modal"></div>
+          <button type = "button" class= "btn-primary btn-sm" data-toggle="modal" data-target=#Modal>残業申請</button>
+          <div class="modal fade" id="Modal">
+            <!-- モーダルコンテント:モーダルに表示させる内容-->
+            <div class="modal-content" id="attendance<%= attendance.id %>" >
+              <!-- モーダルコンテントのヘッダー部分-->
+              <div class="modal-header">
+                <h3 class="modal-title" align="center">【残業申請】</h3>
+                <!--id,user_id,first_dayなど呼び出し（３行ほど）-->
+                <!-- &timesは「×ボタン」の表示-->        
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+              <div class="modal-body">
+                <table class="table table-bordered table-striped table-condensed">
+                  <thead>
+                    <tr>
+                      <th class="table-header">日付</th>
+                      <th class="table-header">曜日</th>
+                      <th class="table-header">終了予定時間</th>
+                      <th class="table-header">翌日</th>
+                      <th class="table-header">業務処理内容</th>
+                      <th class="table-header">指示者確認㊞</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="table-body"><%= attendance.day.month %>/<%= attendance.day.day %></td>
+                      <td class="table-body"><%= @day_of_week[attendance.day.wday] %></td>
+                      <!-- 終了予定時間の表示  -->
+                      <td class="table-body">
+                      </td>
+                      <!-- 翌日のチェックボックスの表示  -->
+                      <td class="table-body">
+                        <%= check_box_tag :check %>
+                      </td>
+                      <!-- 業務処理内容の表示  -->
+                      <td class="table-body">
+                      </td>
+                      <!-- 指示者確認印の表示  -->
+                      <td class="table-body">
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--<div class="modal-footer">-->
+                 <button class="btn btn-lg btn-primary">変更を送信する</button>
+              <!--</div>-->
+            </div>
+          </div>
         </td>
         <!--日付-->
         <td class="table-body">

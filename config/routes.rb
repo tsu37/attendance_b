@@ -29,10 +29,6 @@ Rails.application.routes.draw do
   # CSVインポート
   post '/csv_import' , to: 'users#csv_import', as: 'csv_import'
   
-  # 勤務時間のCSVエクスポート
-  # get '/att_csv_export' , to: 'attendance#att_csv_export', as: 'att_csv_export'
-  # post '/att_csv_export' , to: 'attendance#att_csv_export', as: 'att_csv_export'
-  
   # CSV出力用
   get '/user_att_export', to: 'users#att_export', as: 'att_export'
   
