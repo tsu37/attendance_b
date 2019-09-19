@@ -1,0 +1,67 @@
+<!--お知らせ-->
+<% if @user.superior %>
+  <div id="inline-onemonth-popups">
+    <h4>
+      <% if !@one_month_applications_to_me.blank? %>
+        <a id="hoge" href="#test-onemonth-popup" class="unverified-notification-strong" data-effect="mfp-zoom-in">【 所属長承認申請のお知らせ 】</a>
+        <strong class="unverified-notification-strong unverified-notification-border"><%= "#{@one_month_applications_to_me.count}件の通知があります" %></strong>  
+      <% else %>
+        <a id="hoge" href="#test-onemonth-popup" data-effect="mfp-zoom-in">【 所属長承認申請のお知らせ 】</a>
+      <% end %>
+    </h4>
+  </div>
+  <div id="test-onemonth-popup" class="white-popup mfp-with-anim mfp-hide">
+    <%= form_tag update_onemonth_applied_attendance_path, method: :post do %>
+      <%= hidden_field_tag :id, @user.id %>
+      <%= hidden_field_tag :first_day, @first_day %>  
+      <% @one_month_applications.each do |name, applications| %>
+        <h4 align="center">【 <%= name %> からの1ヵ月分勤怠申請】</h4>
+        <table class="txt1 table table-bordered table-striped table-condensed table-status">
+          <thead>
+            <tr>
+              <th class="table-header">月</th>
+              <th class="table-header">指示者確認㊞</th>
+              <th class="table-header">変更</th>
+              <th class="table-header">勤怠を確認する</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% applications.each do |application| %>
+              <%= fields_for("application[]", application) do |f| %>
+                <tr>
+                  <!-- 月 -->
+                  <td class="table-body"><%= application.application_date.month %>月</td>
+                  <!-- 指示者確認㊞の表示  -->
+                  <td class="table-body">
+                   <%= f.select :application_state, OneMonthAttendance.localed_application_statuses[0..3], {}%>
+                  </td>
+                  <!-- 変更の表示  -->
+                  <td class="table-body">
+                    <%= check_box_tag 'check[]', application.id %>
+                  </td>
+                  <!-- 申請者の勤怠を確認するボタンの表示  -->
+                  <td class="table-body">
+                    <%= link_to "確認", show_url(params: { id: application.application_user_id, first_day: application.application_date }), method: :get, style:"color:white", class: 'btn btn-default btn-primary' %>
+                  </td>
+                </tr>
+              <% end %>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
+      <div align="center"><%= submit_tag "変更を送信する", style:"width:200px", class: "btn btn-lg btn-primary" %></div>
+    <% end %>
+  </div>
+<% end %>
+              
+<script>
+  $('#inline-onemonth-popups').magnificPopup({
+    delegate: 'a',
+    removalDelay: 500,
+    callbacks: {
+      beforeOpen: function() {
+         this.st.mainClass = this.st.el.attr('data-effect');
+      },
+    },
+  });
+</script>

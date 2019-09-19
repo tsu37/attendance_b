@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190908101107) do
+ActiveRecord::Schema.define(version: 20190919124212) do
 
   create_table "attendances", force: :cascade do |t|
     t.datetime "attendance_time"
@@ -24,10 +24,24 @@ ActiveRecord::Schema.define(version: 20190908101107) do
     t.integer "authorizer_user_id"
     t.integer "user_id"
     t.string "instructor"
+    t.datetime "schedule_end_time"
+    t.text "business_processing"
+    t.integer "authorizer_user_id_of_attendance"
+    t.integer "application_edit_state", default: 0
+    t.integer "application_state", default: 0
   end
 
   create_table "basic_infos", force: :cascade do |t|
     t.datetime "basic_work_hour"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "one_month_attendances", force: :cascade do |t|
+    t.integer "application_user_id"
+    t.integer "authorizer_user_id"
+    t.date "application_date"
+    t.integer "application_state", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -52,6 +66,8 @@ ActiveRecord::Schema.define(version: 20190908101107) do
     t.string "uid"
     t.time "designated_work_start_hour"
     t.time "designated_work_end_hour"
+    t.boolean "superior", default: false
+    t.integer "applied_last_time_user_id"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 

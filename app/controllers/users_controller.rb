@@ -47,9 +47,50 @@ class UsersController < ApplicationController
     @work_sum = 0
     @attendances.where.not(attendance_time: nil, leaving_time: nil).each do |attendance|
       @work_sum += attendance.leaving_time - attendance.attendance_time
+      # 自分に申請中の残業一覧を取得	
+      @attendances_over = @attendances.where.not(schedule_end_time: nil, authorizer_user_id: nil)
     end
     @work_sum /= 3600
+    # 上長ユーザを全取得 @note 自分以外の上長を取得	
+    ids = [@user.applied_last_time_user_id]	
+    User.where.not(id: @user.id, superior: false).each {|s| ids.push(s.id) if s.id != @user.applied_last_time_user_id }	
+    @superior_users = ids.collect {|id| User.where.not(id: @user.id, superior: false).detect {|x| x.id == id.to_i}}.compact	
+    # 自身の所属長承認状態取得	
+    @one_month_attendance = OneMonthAttendance.find_by(application_user_id: @user.id, application_date: @first_day)	
+    # 申請用に新規作成	
+    @new_one_month_attendance = OneMonthAttendance.new(application_user_id: @user.id)	
+    # 自分に申請中の勤怠編集一覧を取得	
+    @edit_applications_to_me = Attendance.where(authorizer_user_id_of_attendance: @user.id, application_edit_state: :applying1)	
+    # 存在しないuserは除外	
+    @edit_applications_to_me = @edit_applications_to_me.select{ |x| !User.find_by(id: x.user_id).nil? }	
+    # 名前ごとに分類	
+    @edit_applications = @edit_applications_to_me.group_by do |application|	
+    User.find_by(id: application.user_id).name	
+    end	
+    # 承認済みの勤怠編集一覧を取得	
+    @edit_log_applications = Attendance.where(user_id: @user.id, application_edit_state: :approval2)	
+    # 名前ごとに分類	
+    @edit_log_applications = @edit_log_applications.group_by do |application|	
+    User.find_by(id: application.user_id).name	
+    end	
+    # 自分に申請中の残業一覧を取得	
+    @applications_to_me = Attendance.where(authorizer_user_id: @user.id, application_state: :applying)	
+    # 存在しないuserは除外	
+    @applications_to_me = @applications_to_me.select{ |x| !User.find_by(id: x.user_id).nil? }	
+    # 名前ごとに分類	
+    @overtime_applications = @applications_to_me.group_by do |application|	
+    User.find_by(id: application.user_id).name	
+    end	
+    # 所属長承認の情報取得	
+    @one_month_applications_to_me = OneMonthAttendance.where(authorizer_user_id: @user.id, application_state: :applying)	
+    # 存在しないuserは除外	
+    @one_month_applications_to_me = @one_month_applications_to_me.select{ |x| !User.find_by(id: x.application_user_id).nil? }	
+    # 名前ごとに分類	
+    @one_month_applications = @one_month_applications_to_me.group_by do |application|	
+    User.find_by(id: application.application_user_id).name	
+    end
   end
+  
   def att_export
     # byebug
     @user = User.find(params[:id])
@@ -77,6 +118,51 @@ class UsersController < ApplicationController
       @work_sum += attendance.leaving_time - attendance.attendance_time
     end
     @work_sum /= 3600
+
+    # 上長ユーザを全取得 @note 自分以外の上長を取得
+    ids = [@user.applied_last_time_user_id]
+    User.where.not(id: @user.id, superior: false).each {|s| ids.push(s.id) if s.id != @user.applied_last_time_user_id }
+    @superior_users = ids.collect {|id| User.where.not(id: @user.id, superior: false).detect {|x| x.id == id.to_i}}.compact
+    
+    # 自身の所属長承認状態取得
+    @one_month_attendance = OneMonthAttendance.find_by(application_user_id: @user.id, application_date: @first_day)
+    # 申請用に新規作成
+    @new_one_month_attendance = OneMonthAttendance.new(application_user_id: @user.id)
+
+    # 自分に申請中の勤怠編集一覧を取得
+    @edit_applications_to_me = Attendance.where(authorizer_user_id_of_attendance: @user.id, application_edit_state: :applying1)
+    # 存在しないuserは除外
+    @edit_applications_to_me = @edit_applications_to_me.select{ |x| !User.find_by(id: x.user_id).nil? }
+    # 名前ごとに分類
+    @edit_applications = @edit_applications_to_me.group_by do |application|
+      User.find_by(id: application.user_id).name
+    end
+
+    # 承認済みの勤怠編集一覧を取得
+    @edit_log_applications = Attendance.where(user_id: @user.id, application_edit_state: :approval2)
+    # 名前ごとに分類
+    @edit_log_applications = @edit_log_applications.group_by do |application|
+      User.find_by(id: application.user_id).name
+    end
+
+    # 自分に申請中の残業一覧を取得
+    @applications_to_me = Attendance.where(authorizer_user_id: @user.id, application_state: :applying)
+    # 存在しないuserは除外
+    @applications_to_me = @applications_to_me.select{ |x| !User.find_by(id: x.user_id).nil? }
+    # 名前ごとに分類
+    @overtime_applications = @applications_to_me.group_by do |application|
+      User.find_by(id: application.user_id).name
+    end
+
+    # 所属長承認の情報取得
+    @one_month_applications_to_me = OneMonthAttendance.where(authorizer_user_id: @user.id, application_state: :applying)
+    # 存在しないuserは除外
+    @one_month_applications_to_me = @one_month_applications_to_me.select{ |x| !User.find_by(id: x.application_user_id).nil? }
+    # 名前ごとに分類
+    @one_month_applications = @one_month_applications_to_me.group_by do |application|
+      User.find_by(id: application.application_user_id).name
+    end
+
 
     # CSV出力ファイル名を指定
     respond_to do |format|
@@ -171,6 +257,48 @@ class UsersController < ApplicationController
     end
     render 'edit_basic_info'
   end 
+  
+    # 1ヵ月分の勤怠申請
+  def onemonth_application
+    @user = User.find_by(id: params[:one_month_attendance][:application_user_id])
+    
+    # 申請先が空なら何もしない
+    if params[:one_month_attendance][:authorizer_user_id].blank?
+      flash[:danger] = "所属長承認の申請宛先指定が空です"
+      redirect_to user_url(@user, params: { id: @user.id, first_day: params[:one_month_attendance][:first_day] })
+      return
+    end
+    
+    # 更新ユーザが見つからない場合はホームへ戻る
+    if @user.nil?
+      flash[:error] = "自分のアカウントが見つかりませんでした"
+      redirect_to(root_url)
+      return
+    end
+
+    @one_month_attendance = OneMonthAttendance.find_by(application_user_id: params[:one_month_attendance][:application_user_id], application_date: params[:one_month_attendance][:application_date])
+    # データがないなら新規作成
+    if @one_month_attendance.nil?
+      @one_month_attendance = OneMonthAttendance.new(one_month_attendance_params)
+      if !@one_month_attendance.save
+        flash[:error] = "所属長承認の申請に失敗しました"
+        redirect_to user_url(@user, params: { id: @user.id, first_day: params[:one_month_attendance][:first_day] })
+        return
+      end
+    else
+      if !@one_month_attendance.update_attributes(one_month_attendance_params)
+        flash[:error] = "所属長承認の申請に失敗しました"
+        redirect_to user_url(@user, params: { id: @user.id, first_day: params[:one_month_attendance][:first_day] })
+        return
+      end
+    end
+
+    @one_month_attendance.applying!
+    # 申請者の番号も保持
+    @user.update_attributes(applied_last_time_user_id: @one_month_attendance.authorizer_user_id)
+    flash[:success] = "所属長承認申請しました"
+    redirect_to user_url(@user, params: { id: @user.id, first_day: params[:one_month_attendance][:first_day] })
+  end
    
   def csv_import
     if params[:csv_file].blank?

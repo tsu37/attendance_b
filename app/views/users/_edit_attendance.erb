@@ -1,0 +1,140 @@
+<!--お知らせ-->
+<% if @user.superior %>
+  <div id="inline-edit-popups">
+    <h4>
+      <% if !@edit_applications_to_me.blank? %>
+        <a id="hoge" href="#test-edit-popup" class="unverified-notification-strong" data-effect="mfp-zoom-in">【 勤怠変更申請のお知らせ 】</a>
+        <strong class="unverified-notification-strong unverified-notification-border"><%= "#{@edit_applications_to_me.count}件の通知があります" %></strong>  
+      <% else %>
+        <a id="hoge" href="#test-edit-popup" data-effect="mfp-zoom-in">【 勤怠変更申請のお知らせ 】</a>
+      <% end %>
+    </h4>
+  </div>
+  <div id="test-edit-popup" class="white-popup mfp-with-anim mfp-hide">
+    <%= form_tag update_applied_attendance_path, method: :post do %>
+      <%= hidden_field_tag :id, @user.id %>
+      <%= hidden_field_tag :first_day, @first_day %>  
+      <% @edit_applications.each do |name, attendances| %>
+        <h4 align="center">【 <%= name %> からの勤怠変更申請】</h4>
+        <table class="txt1 table table-bordered table-striped table-condensed table-status">
+          <thead>
+            <tr>
+              <th rowspan="3" class="table-header">日付</th>
+              <th rowspan="3" class="table-header">曜日</th>
+              <th colspan="4" class="table-header">変更前</th>
+              <th colspan="4" class="table-header">変更後</th>
+              <th rowspan="3" class="table-header">備考</th>
+              <th rowspan="3" class="table-header">指示者確認㊞</th>
+              <th rowspan="3" class="table-header">変更</th>
+              <th rowspan="3" class="table-header">勤怠を確認する</th>
+            </tr>
+            <tr>
+              <th colspan="2" class="table-header">出社</th>
+              <th colspan="2" class="table-header">退社</th>
+              <th colspan="2" class="table-header">出社</th>
+              <th colspan="2" class="table-header">退社</th>
+            </tr>
+            <tr>
+              <th class="table-header">時</th>
+              <th class="table-header">分</th>
+              <th class="table-header">時</th>
+              <th class="table-header">分</th>
+              <th class="table-header">時</th>
+              <th class="table-header">分</th>
+              <th class="table-header">時</th>
+              <th class="table-header">分</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% attendances.each do |attendance| %>
+              <%= fields_for("attendance[]", attendance) do |f| %>
+                <tr class="overtime_application">
+                  <td class="table-body"><%= attendance.day.month %>/<%= attendance.day.day %></td>
+                  <td class="table-body"><%= @youbi[attendance.day.wday] %></td>
+                  <!-- 変更前の表示 -->
+                  <!-- 出社 -->
+                  <!-- 時 -->
+                  <td class="table-body">
+                    <%= attendance.work_start.hour if !attendance.work_start.blank? %>
+                  </td>
+                  <!-- 分 -->
+                  <td class="table-body">
+                    <%= attendance.work_start.min if !attendance.work_start.blank? %>
+                  </td>
+                  
+                  <!-- 退社 -->
+                  <!-- 時 -->
+                  <td class="table-body">
+                    <%= attendance.work_end.hour if !attendance.work_end.blank? %>
+                  </td>
+                  <!-- 分 -->
+                  <td class="table-body">
+                    <%= attendance.work_end.min if !attendance.work_end.blank? %>
+                  </td>
+                  
+                  
+                  <!-- 変更後の表示 -->
+                  <!-- 出社 -->
+                  <!-- 時 -->
+                  <td class="table-body">
+                    <%= attendance.edited_work_start.hour if !attendance.edited_work_start.blank? %>
+                  </td>
+                  <!-- 分 -->
+                  <td class="table-body">
+                    <%= attendance.edited_work_start.min if !attendance.edited_work_start.blank? %>
+                  </td>
+                  
+                  <!-- 退社 -->
+                  <!-- 時 -->
+                  <td class="table-body">
+                    <%= attendance.edited_work_end.hour if !attendance.edited_work_end.blank? %>
+                  </td>
+                  <!-- 分 -->
+                  <td class="table-body">
+                    <%= attendance.edited_work_end.min if !attendance.edited_work_end.blank? %>
+                  </td>
+                  
+                  <td class="table-body">
+                    <%= attendance.rmarks if !attendance.blank?%>
+                  </td>
+                  
+                  <!-- 指示者確認㊞の表示  -->
+                  <td class="table-body">
+                    <%= f.select :application_edit_state, Attendance.localed_application_edit_statuses[0..3], {}, {:class => "application_edit_state"}%>
+                  </td>
+                  
+                  <!-- 変更の表示  -->
+                  <td class="table-body">
+                    <%= check_box_tag 'check[]', attendance.id %>
+                  </td>
+                  
+                  <!-- 申請者の勤怠を確認するボタンの表示  -->
+                  <td class="table-body">
+                    <%= link_to "確認", show_url(params: { id: attendance.user_id, first_day: attendance.day.beginning_of_month }), method: :get, style:"color:white", class: 'btn btn-default btn-primary' %>
+                  </td>
+              
+                  <!-- 送信パラメータ  -->
+                  <%= f.hidden_field :edited_work_start, :value => "#{attendance.edited_work_start}" %>
+                  <%= f.hidden_field :edited_work_end, :value => "#{attendance.edited_work_end}" %>
+                </tr>
+              <% end %>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
+      <div align="center"><%= submit_tag "変更を送信する", style:"width:200px", class: "btn btn-lg btn-primary" %></div>
+    <% end %>
+  </div>
+<% end %>
+              
+<script>
+  $('#inline-edit-popups').magnificPopup({
+    delegate: 'a',
+    removalDelay: 500,
+    callbacks: {
+      beforeOpen: function() {
+         this.st.mainClass = this.st.el.attr('data-effect');
+      },
+    },
+  });
+</script>

@@ -43,9 +43,12 @@ class AttendancesController < ApplicationController
       @user = current_user
     end
     @user = User.find(params[:id])
-
     # 曜日表示用に使用する
     @day_of_week = %w[日 月 火 水 木 金 土]
+    # 上長ユーザを全取得
+    ids = [@user.applied_last_time_user_id]
+    User.where.not(id: @user.id, superior: false).each {|s| ids.push(s.id) if s.id != @user.applied_last_time_user_id }
+    @superior_users = ids.collect {|id| User.where.not(id: @user.id, superior: false).detect {|x| x.id == id.to_i}}.compact    
     
     # 表示月があれば取得する
     if !params[:first_day].nil?
@@ -94,4 +97,63 @@ class AttendancesController < ApplicationController
     end
     redirect_to user_url(@user, params:{ id: @user.id, first_day: params[:first_day]}) and return
   end
+  
+    # 申請された1ヵ月分の勤怠を更新する（承認/否認など）
+  def update_onemonth_applied_attendance
+    
+    # 変更チェックが1つ以上で勤怠変更情報を更新
+    if !params[:check].blank?
+      params[:application].each do |id, item|
+        # 更新チェックがなければ何もしない
+        if !params[:check].include?(id)
+          next
+        end
+        
+        attendance = OneMonthAttendance.find(id)
+        if attendance.blank?
+          next
+        end
+        # 申請情報更新
+        attendance.update_attributes(item.permit(:application_state))
+      end
+    end
+
+    @user = User.find(params[:id])
+    redirect_to user_url(@user, params: { id: @user.id, first_day: params[:first_day] })
+  end
+  
+  # 残業申請の編集
+  def edit_overtime
+    @user = User.find(params[:id])
+    # 曜日表示用に使用する
+    @youbi = %w[日 月 火 水 木 金 土]
+    # 上長ユーザを全取得
+    ids = [@user.applied_last_time_user_id]
+    User.where.not(id: @user.id, superior: false).each {|s| ids.push(s.id) if s.id != @user.applied_last_time_user_id }
+    @superior_users = ids.collect {|id| User.where.not(id: @user.id, superior: false).detect {|x| x.id == id.to_i}}.compact
+    
+    # 表示月があれば取得する
+    if !params[:first_day].nil?
+      @first_day = Date.parse(params[:first_day])
+    else
+      # ないなら今月分を表示する
+      @first_day = Date.new(Date.today.year, Date.today.month, 1)
+    end
+    @last_day = @first_day.end_of_month
+    
+    # 期間分のデータチェック
+    (@first_day..@last_day).each do |date|
+      # 該当日付のデータがないなら作成する
+      if !@user.attendances.any? {|attendance| attendance.day == date }
+        attend = Attendance.create(user_id: @user.id, day:date)
+        attend.save
+      end
+    end
+    
+    # 表示期間の勤怠データを日付順にソートして取得
+    @attendances = @user.attendances.where('day >= ? and day <= ?', @first_day, @last_day).order("day ASC")
+  end
+  
+  
+  
 end

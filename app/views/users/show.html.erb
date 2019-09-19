@@ -1,37 +1,35 @@
 <% provide(:title, @user.name) %>
 <table class="table table-bordered table-striped table-condensed">
-  
   <thead>
-   <div class = "header">  
-    <tr>
-      <th class="table-header">
-        <%= link_to "←",user_url(params: { id: @user.id, first_day: @first_day.prev_month }),  
-            style:"color:black", class: 'btn' %>  
-            
-              <%= @first_day.strftime("%Y年%m月") %> 時間管理表 
-        <%= link_to "→", user_url(params: { id: @user.id, first_day: @first_day.next_month }), 
-            style:"color:black", class: 'btn' %>
-     </th>
-     
-     <th class="table-header">
-        指定勤務時間:<%= format("%.2f", ((@user.design_work_hour.hour*60.0) + @user.design_work_hour.min)/60) if !@user.nil? && !@user.design_work_hour.nil? %></th>
-     <th colspan="3" class="table-header">
-        基本時間:<%= format("%.2f", ((@user.basic_work_hour.hour*60.0) + @user.basic_work_hour.min)/60) if !@user.nil? && !@user.basic_work_hour.nil? %></th>
-     </th>
-     <th class="table-header">初日: <%= @first_day %></th>
-    </tr>
-    
-    <tr>
-      <th class="table-header">所属: <%= @user.affiliation %> </th>
-      <th class="table-header">氏名: <%= @user.name %></th>
-      <th class="table-header">コード:</th>
-      <th class="table-header"></th>
-      <th class="table-header">出勤日数:<%= @attendance_days %>日</th>
-      <th class="table-header">締め: <%= @last_day %></th>
-    </tr>
-  </div>  
+    <div class = "header">  
+      <tr>
+        <th class="table-header">
+          <%= link_to "←",user_url(params: { id: @user.id, first_day: @first_day.prev_month }),  
+              style:"color:black", class: 'btn' %>  
+              
+                <%= @first_day.strftime("%Y年%m月") %> 時間管理表 
+          <%= link_to "→", user_url(params: { id: @user.id, first_day: @first_day.next_month }), 
+              style:"color:black", class: 'btn' %>
+        </th>
+        <th class="table-header">
+            指定勤務時間:<%= format("%.2f", ((@user.design_work_hour.hour*60.0) + @user.design_work_hour.min)/60) if !@user.nil? && !@user.design_work_hour.nil? %></th>
+        <th colspan="3" class="table-header">
+            基本時間:<%= format("%.2f", ((@user.basic_work_hour.hour*60.0) + @user.basic_work_hour.min)/60) if !@user.nil? && !@user.basic_work_hour.nil? %></th>
+        </th>
+        <th class="table-header">初日: <%= @first_day %></th>
+      </tr>
+      <tr>
+        <th class="table-header">所属: <%= @user.affiliation %> </th>
+        <th class="table-header">氏名: <%= @user.name %></th>
+        <th class="table-header">コード:<%= @user.user_id %></th>
+        <th class="table-header"></th>
+        <th class="table-header">出勤日数:<%= @attendance_days %>日</th>
+        <th class="table-header">締め: <%= @last_day %></th>
+      </tr>
+    </div>  
   </thead>
 </table>
+<%= render 'one_month_attendance' if current_user == @user %>
 <!--attendance_edit_pathに、userのidと今月の値を渡す-->
 <%= link_to "勤怠を編集", edit_attendance_path(@attendances, params: { id: @user.id, first_day: @first_day }), :style=>"color:white;", class: "btn btn-sm btn-primary"  %>
 <%= link_to "CSV出力", att_export_path(@attendance, params: { id: @user.id, first_day: @first_day, format: :csv}), :style=>"color:white;", class: "btn btn-sm btn-primary" %>
@@ -68,10 +66,13 @@
             <div class="modal-content" id="attendance<%= attendance.id %>" >
               <!-- モーダルコンテントのヘッダー部分-->
               <div class="modal-header">
-                <h3 class="modal-title" align="center">【残業申請】</h3>
-                <!--id,user_id,first_dayなど呼び出し（３行ほど）-->
                 <!-- &timesは「×ボタン」の表示-->        
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3 class="modal-title" align="center">【残業申請】</h3>
+                <%= form_for(attendance, url: one_overtime_application_path, method: :post ) do |f| %>
+                <%= f.hidden_field :id, :value => attendance.id %>
+                <%= f.hidden_field :user_id, :value => @user.id %>
+                <%= f.hidden_field :first_day, :value => @first_day %>
               </div>
               <div class="modal-body">
                 <table class="table table-bordered table-striped table-condensed">
@@ -91,6 +92,7 @@
                       <td class="table-body"><%= @day_of_week[attendance.day.wday] %></td>
                       <!-- 終了予定時間の表示  -->
                       <td class="table-body">
+                        <%= f.datetime_select :schedule_end_time, {discard_year: true, discard_month: true, discard_day: true, include_blank: true}, {class: "form-control bootstrap-date-only-width schedule_end_time"} %>
                       </td>
                       <!-- 翌日のチェックボックスの表示  -->
                       <td class="table-body">
@@ -98,9 +100,21 @@
                       </td>
                       <!-- 業務処理内容の表示  -->
                       <td class="table-body">
+                        <%= f.text_field :business_processing, class: 'form-control'%>
                       </td>
                       <!-- 指示者確認印の表示  -->
                       <td class="table-body">
+                        <% if !attendance.authorizer_user_id.blank? && !User.find_by(id: attendance.authorizer_user_id).blank? %>
+                          <% if attendance.applying? %>
+                            <%= User.find_by(id: attendance.authorizer_user_id).name %>へ申請中
+                          <% elsif attendance.approval? %>
+                            <%= User.find_by(id: attendance.authorizer_user_id).name %>から承認済
+                          <% elsif attendance.denial? %>
+                            <%= User.find_by(id: attendance.authorizer_user_id).name %>から否認
+                          <% else %>
+                          <% end %>
+                        <% end %>
+                        <%= f.collection_select :authorizer_user_id, @superior_users, :id, :name, {:include_blank => true, :selected => 0}, {:class => "form-control authorizer_user_id"} %>
                       </td>
                     </tr>
                   </tbody>
@@ -110,6 +124,7 @@
                  <button class="btn btn-lg btn-primary">変更を送信する</button>
               <!--</div>-->
             </div>
+            <% end %>
           </div>
         </td>
         <!--日付-->

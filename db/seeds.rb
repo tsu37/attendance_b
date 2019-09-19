@@ -17,7 +17,7 @@ User.create!(name:  "上長",
              affiliation: "開発部",
              user_id: 1001,
              uid: 1001,
-             admin:     true,
+             superior:    true,
              activated: true,
              activated_at: Time.zone.now)
 # 99.times do |n|

@@ -10,7 +10,16 @@ Rails.application.routes.draw do
   post '/attendance_edit', to: 'attendances#edit_all', as: 'edit_attendance_all'
   post '/attendance', to: 'attendances#attendance_update', as: 'attendance'
   post '/leaving', to: 'attendances#leaving_update', as: 'leaving'
+  post '/attendance/applied', to: 'attendance#update_applied_attendance', as: 'update_applied_attendance'
 
+  # 残業申請関係
+  get '/attendance/overtime', to: 'attendance#edit_overtime', as: 'edit_overtime_attendance'
+  post '/attendance/overtime', to: 'attendance#overtime_application', as: 'overtime_application'
+  post '/attendance/one_overtime', to: 'attendance#one_overtime_application', as: 'one_overtime_application'
+  
+  # 1ヵ月分勤怠の確認申請関係
+  post '/users/onemonth', to: 'users#onemonth_application', as: 'onemonth_application'
+  post '/attendance/update_onemonth', to: 'attendance#update_onemonth_applied_attendance', as: 'update_onemonth_applied_attendance'
   
   get '/basic_info',   to: 'users#edit_basic_info'
   post '/basic_info',   to: 'users#edit_basic_info'
