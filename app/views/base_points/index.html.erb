@@ -1,0 +1,76 @@
+<h1>拠点一覧</h1>
+
+<table class="txt1 table table-bordered table-striped table-condensed table-status">
+  <thead>
+    <tr>
+      <th class="table-header"></th>
+      <th class="table-header"></th>
+      <th class="table-header">拠点番号</th>
+      <th class="table-header">拠点名</th>
+      <th class="table-header">勤怠種類</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @base_points.each do |base_point| %>
+      <tr>
+        <td class="table-header">
+        
+          		<a style="display:block" class= " btn button-small-size btn-primary" data-toggle="collapse" data-parent="#sampleAccordion" href="#sampleAccordionCollapse<%= base_point.id %>" > 
+                修正</a>
+        	  
+
+        </td>
+        <td class="table-header"><%= link_to "削除", base_point, method: :delete,
+                                            data: { confirm: "削除してよろしいですか？" } ,
+                                            :style=>"color:white;", class: "btn btn-default btn-primary" %></td>
+        <td class="table-header"><%= base_point.id %></td>
+        <td class="table-header"><%= base_point.name %></td>
+        <td class="table-header">
+          <% if base_point.work_start? %>
+            出勤
+          <% elsif base_point.work_end? %>
+            退勤
+          <% else %>
+          <% end %>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4" class="table-header">
+          <div id=  "sampleAccordionCollapse<%= base_point.id %>"  class="panel-collapse collapse">
+        	  <div class="panel-body">
+        	    <%= form_for(base_point) do |f| %>
+                <%= f.label :name, "拠点名"%>
+                <%= f.text_field :name, class: 'form-control' %>
+                <%= f.label :attendance_state, "勤怠種類"%>
+                <%= f.select :attendance_state, BasePoint.localed_attendance_state, {}, class: 'form-control' %>
+                <%= submit_tag '修正完了' , class: "btn btn-primary"  %>
+              <% end %>
+        		</div>
+        	</div>
+    	  </td>
+    	</tr>
+    <% end %>
+  </tbody>
+</table>
+
+<!-- 拠点登録用アコーディオン -->
+<div class="panel panel-default">
+	<div class="panel-heading">
+	  <h3 class="panel-title">
+  		<a style="display:block; color:white; " class= " btn button-middle-size btn-primary" data-toggle="collapse" data-parent="#sampleAccordion" href="#sampleAccordionCollapse"  >
+        <h5>拠点情報追加</h5>
+  		</a>
+		</h3>
+	</div>
+  <div id=  "sampleAccordionCollapse"  class="panel-collapse collapse">
+	  <div class="panel-body">
+	    <%= form_for(@base_point, url: base_point_create_path) do |f| %>
+        <%= f.label :name, "名前"%>
+        <%= f.text_field :name, class: 'form-control' %>
+        <%= f.label :attendance_state, "勤怠種類"%>
+        <%= f.select :attendance_state, BasePoint.localed_attendance_state, {}, class: 'form-control' %>
+        <%= submit_tag '追加' , class: "btn btn-primary"  %>
+      <% end %>
+		</div>
+	</div>
+</div>

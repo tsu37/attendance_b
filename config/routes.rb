@@ -44,4 +44,8 @@ Rails.application.routes.draw do
   # 出勤中社員の一覧
   get '/user_attendance_list', to: 'users#attendance_list', as: 'user_attendance_list'
   
+  # 拠点情報関係
+  resources :base_points
+  post '/base_point/create',  to: 'base_points#create', as: 'base_point_create'
+  
 end

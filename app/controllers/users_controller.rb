@@ -174,6 +174,7 @@ class UsersController < ApplicationController
   
 
   def edit_basic_info
+    byebug
     @user = User.find(1)
       if params[:user].present?
         design_work_hour = params[:user][:design_work_hour]
@@ -260,6 +261,7 @@ class UsersController < ApplicationController
   
     # 1ヵ月分の勤怠申請
   def onemonth_application
+    byebug
     @user = User.find_by(id: params[:one_month_attendance][:application_user_id])
     
     # 申請先が空なら何もしない
