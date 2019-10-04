@@ -1,7 +1,7 @@
 <% provide(:title, 'ユーザー一覧') %>
 <h1>ユーザー一覧</h1>
 
-<%= form_tag csv_import_path, method: :post, :style=>"color:white;", class: 'form-btn', multipart: true do %>
+<%= form_tag import_path, method: :post, :style=>"color:white;", class: 'form-btn', multipart: true do %>
   <%= file_field_tag :csv_file %>
   <%= submit_tag "CSVをインポート" ,:style=>"color:white;", class: "btn btn-sm btn-primary"%>
 <% end %>

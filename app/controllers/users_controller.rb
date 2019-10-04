@@ -4,8 +4,8 @@ class UsersController < ApplicationController
   before_action :admin_user,     only: [:index, :edit_basic_info, :update_basic_info, :destroy]
 
   def index
-    # @users = User.paginate(page: params[:page])
-    @users = User.where(activated: true).paginate(page: params[:page]).search(params[:search])
+    @users = User.paginate(page: params[:page])
+    # @users = User.where(activated: true).paginate(page: params[:page]).search(params[:search])
   end
   
   def show
@@ -92,7 +92,6 @@ class UsersController < ApplicationController
   end
   
   def att_export
-    # byebug
     @user = User.find(params[:id])
     # @user = User.all
     # 曜日表示用に使用する
@@ -174,7 +173,6 @@ class UsersController < ApplicationController
   
 
   def edit_basic_info
-    byebug
     @user = User.find(1)
       if params[:user].present?
         design_work_hour = params[:user][:design_work_hour]
@@ -231,17 +229,6 @@ class UsersController < ApplicationController
       end
     end
   end
-
-  # 基本情報の編集
-  def edit_basic_info
-    # 1つしかないので先頭を取得
-    @basic_info = BasicInfo.find_by(id: 1)
-    # なければ作成する
-    if @basic_info.nil?
-      @basic_info = BasicInfo.new
-      @basic_info.save
-    end
-  end
    
     # 基本情報の更新
   def update_basic_info
@@ -261,9 +248,7 @@ class UsersController < ApplicationController
   
     # 1ヵ月分の勤怠申請
   def onemonth_application
-    byebug
     @user = User.find_by(id: params[:one_month_attendance][:application_user_id])
-    
     # 申請先が空なら何もしない
     if params[:one_month_attendance][:authorizer_user_id].blank?
       flash[:danger] = "所属長承認の申請宛先指定が空です"
@@ -302,7 +287,7 @@ class UsersController < ApplicationController
     redirect_to user_url(@user, params: { id: @user.id, first_day: params[:one_month_attendance][:first_day] })
   end
    
-  def csv_import
+  def import
     if params[:csv_file].blank?
       flash[:danger] = "読み込むCSVを選択してください。"
       redirect_to users_url

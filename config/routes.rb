@@ -30,13 +30,13 @@ Rails.application.routes.draw do
       get 'attendance_index', to: 'users#attendance_index'
     end
 
-  # ユーザ関係
-  resources :users do
-    collection { post :import }
-  end
+  # # ユーザ関係
+  # resources :users do
+  #   collection { post :import }
+  # end
   
   # CSVインポート
-  post '/csv_import' , to: 'users#csv_import', as: 'csv_import'
+  post '/csv_import' , to: 'users#import', as: 'import'
   
   # CSV出力用
   get '/user_att_export', to: 'users#att_export', as: 'att_export'
