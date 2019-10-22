@@ -4,6 +4,7 @@ class UsersController < ApplicationController
   before_action :admin_user,     only: [:index, :edit_basic_info, :update_basic_info, :destroy]
 
   def index
+    
     @users = User.paginate(page: params[:page])
     # @users = User.where(activated: true).paginate(page: params[:page]).search(params[:search])
   end
@@ -17,6 +18,11 @@ class UsersController < ApplicationController
     
     # 曜日表示用に使用する
     @day_of_week = %w[日 月 火 水 木 金 土]
+    # if @day_of_week == 1
+    #   fontcolor == red
+    # elsif @day_of_week == 6
+    #   fontcolor == blue
+    # end
     
     #基本情報
     @basic_info = BasicInfo.find_by(id: 1)
@@ -34,6 +40,7 @@ class UsersController < ApplicationController
     (@first_day..@last_day).each do |date|
       # 該当日付のデータがないなら作成する
       #(例)user1に対して、今月の初日から最終日の値を取得する
+      
       if !@user.attendances.any? {|attendance| attendance.day == date }
         linked_attendance = Attendance.create(user_id: @user.id, day: date)
         linked_attendance.save
@@ -48,7 +55,7 @@ class UsersController < ApplicationController
     @attendances.where.not(attendance_time: nil, leaving_time: nil).each do |attendance|
       @work_sum += attendance.leaving_time - attendance.attendance_time
       # 自分に申請中の残業一覧を取得	
-      @attendances_over = @attendances.where.not(schedule_end_time: nil, authorizer_user_id: nil)
+      @attendances_over = @attendances.where.not(scheduled_end_hour: nil, authorizer_user_id: nil)
     end
     @work_sum /= 3600
     # 上長ユーザを全取得 @note 自分以外の上長を取得	

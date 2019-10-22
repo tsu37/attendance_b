@@ -11,6 +11,7 @@ class User < ApplicationRecord
   validates :password, presence: true, length: { minimum: 6 }, on: :create
   validates :password, length: {minimum: 6}, on: :update, allow_blank: true
 
+
   class << self
     # 渡された文字列のハッシュ値を返す
     def digest(string)
@@ -33,6 +34,7 @@ class User < ApplicationRecord
     
     CSV.foreach(file.path, headers: true, encoding: 'Shift_JIS:UTF-8') do |row|
       
+
       # id重複する場合はその行のみカット
       if exists?(id: row["id"])
         overlap_id.push(row["id"])
@@ -44,25 +46,26 @@ class User < ApplicationRecord
       if user.valid?
         new_users.push(user)
       else
-        return "id#{row["id"]}のデータに不備があったため入力失敗しました"
+        return "id#{row["id"]}のデータに不備があったため入力失敗しました。"
       end
     end
     # 可能なデータだけ保存
     new_users.each do |user|
       if !user.save
-        return "id#{user.id}のデータ保存時にエラーが発生しました"
+        return "id#{user.id}のデータ保存時にエラーが発生しました。"
       end
     end
     
-    # 重複したidがあればメッセージに表示
+    # # 重複したidがあればメッセージに表示
+          byebug
     if overlap_id.count == 0
-      return "アップデートが成功しました"
+      return "アップデートに成功しました。"
     else
       message = "id:"
       overlap_id.each do |id|
         message += "#{id},"
       end
-      message += "は重複のため登録できませんでした"
+      message += "は重複のため登録できませんでした。"
       return message
     end
   end
@@ -98,8 +101,8 @@ class User < ApplicationRecord
     end
   end
   
-  #   # 更新を許可するカラムを定義
-  # def self.updatable_attributes
-  #   ["id", "name", "email", "affiliation", "user_id", "uid", "password", "basic_work_hour", "designated_work_start_hour", "designated_work_end_hour", "admin", "superior"]
-  # end
+    # 更新を許可するカラムを定義
+  def self.updatable_attributes
+    ["id", "name", "email", "affiliation", "user_id", "uid", "password", "basic_work_hour", "designated_work_start_hour", "designated_work_end_hour", "admin", "superior"]
+  end
 end

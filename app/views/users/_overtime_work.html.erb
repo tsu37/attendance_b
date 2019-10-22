@@ -3,20 +3,22 @@
   <div id="inline-popups">
     <h4>
       <% if !@applications_to_me.blank? %>
-        <a id="hoge" href="#test-popup" class="unverified-notification-strong" data-effect="mfp-zoom-in">【 残業申請のお知らせ 】</a>
+        <a id="overtime_work" href="#overtime_work_modal" class="unverified-notification-strong" data-effect="mfp-zoom-in">【 残業申請のお知らせ 】</a>
         <strong class="unverified-notification-strong unverified-notification-border"><%= "#{@applications_to_me.count}件の通知があります" %></strong>  
       <% else %>
-        <a id="hoge" href="#test-popup" data-effect="mfp-zoom-in">【 残業申請のお知らせ 】</a>
+        <a id="overtime_work" href="#overtime_work_modal" data-effect="mfp-zoom-in">【 残業申請のお知らせ 】</a>
       <% end %>
     </h4>
   </div>
-  <div id="test-popup" class="white-popup mfp-with-anim mfp-hide">
-    <%= form_tag overtime_application_path, method: :post do %>
-      <%= hidden_field_tag :id, @user.id %>
-      <%= hidden_field_tag :first_day, @first_day %>  
-      <% @overtime_applications.each do |name, attendances| %>
-        <h4 align="center">【 <%= name %> からの残業申請】</h4>
-        <table class="txt1 table table-bordered table-striped table-condensed table-status">
+  <div id="overtime_work_modal" class="white-popup mfp-with-anim mfp-hide">
+        <h4 align="center">【 <%= @user.name %> からの残業申請】</h4>
+        <%= form_tag overtime_application_path, method: :post do %>
+          <%= hidden_field_tag :id, @user.id %>
+          <%= hidden_field_tag :first_day, @first_day %>  
+          <% @overtime_applications.each do |name, attendances| %>
+      </div>
+      <div class="modal-body">  
+       <table class="table table-bordered table-striped table-condensed">
           <thead>
             <tr>
               <th class="table-header">日付</th>
@@ -35,7 +37,7 @@
               <%= fields_for("attendance[]", attendance) do |f| %>
                 <tr class="overtime_application">
                   <td class="table-body"><%= attendance.day.month %>/<%= attendance.day.day %></td>
-                  <td class="table-body"><%= @youbi[attendance.day.wday] %></td>
+                  <td class="table-body"><%= @day_of_week[attendance.day.wday] %></td>
                   <!-- 終了予定時間の表示  -->
                   <td class="table-body">
                     <%= attendance.scheduled_end_time.hour if !attendance.scheduled_end_time.blank? %> : <%= attendance.scheduled_end_time.min if !attendance.scheduled_end_time.blank? %>
@@ -46,9 +48,9 @@
                   </td>
                   <!-- 時間外時間の表示  -->
                   <td class="table-body">
-                    <% if !User.find_by(name: name).designated_work_end_time.blank? && !attendance.scheduled_end_time.blank? %>
-                      <% if (Time.new(attendance.scheduled_end_time.year, attendance.scheduled_end_time.month, attendance.scheduled_end_time.day, attendance.scheduled_end_time.hour, attendance.scheduled_end_time.min) - Time.new(attendance.day.year, attendance.day.month, attendance.day.day, User.find_by(name: name).designated_work_end_time.hour, User.find_by(name: name).designated_work_end_time.min)) > 0 %>
-                        <%= format("%.2f", (Time.new(attendance.scheduled_end_time.year, attendance.scheduled_end_time.month, attendance.scheduled_end_time.day, attendance.scheduled_end_time.hour, attendance.scheduled_end_time.min) - Time.new(attendance.day.year, attendance.day.month, attendance.day.day, User.find_by(name: name).designated_work_end_time.hour, User.find_by(name: name).designated_work_end_time.min))/3600) %>
+                    <% if !User.find_by(name: name).designated_work_end_hour.blank? && !attendance.scheduled_end_time.blank? %>
+                      <% if (Time.new(attendance.scheduled_end_time.year, attendance.scheduled_end_time.month, attendance.scheduled_end_time.day, attendance.scheduled_end_time.hour, attendance.scheduled_end_time.min) - Time.new(attendance.day.year, attendance.day.month, attendance.day.day, User.find_by(name: name).designated_work_end_hour.hour, User.find_by(name: name).designated_work_end_hour.min)) > 0 %>
+                        <%= format("%.2f", (Time.new(attendance.scheduled_end_time.year, attendance.scheduled_end_time.month, attendance.scheduled_end_time.day, attendance.scheduled_end_time.hour, attendance.scheduled_end_time.min) - Time.new(attendance.day.year, attendance.day.month, attendance.day.day, User.find_by(name: name).designated_work_end_hour.hour, User.find_by(name: name).designated_work_end_hour.min))/3600) %>
                       <% end %>
                     <% end %>
                   </td>
@@ -74,7 +76,7 @@
           </tbody>
         </table>
       <% end %>
-      <div align="center"><%= submit_tag "変更を送信する", style:"width:200px", class: "btn btn-lg btn-primary" %></div>
+      <div><%= submit_tag "変更を送信する", style:"width:200px", class: "btn btn-lg btn-primary" %></div>
     <% end %>
   </div>
 <% end %>

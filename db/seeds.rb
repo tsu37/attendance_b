@@ -1,25 +1,38 @@
 # ユーザー
 User.create!(name:  "Example User",
-             email: "example@railstutorial.org",
-             password:              "foobar",
-             password_confirmation: "foobar",
-             affiliation: "管理部",
-             user_id: 1000,
-             uid: 1000,
-             admin:     true,
-             activated: true,
-             activated_at: Time.zone.now)
+            email: "example@railstutorial.org",
+            password:              "foobar",
+            password_confirmation: "foobar",
+            affiliation: "管理部",
+            user_id: 1000,
+            uid: 1000,
+            admin:     true,
+            activated: true,
+            activated_at: Time.zone.now)
              
 User.create!(name:  "上長",
-             email: "jocho@railstutorial.org",
-             password:              "foobar",
-             password_confirmation: "foobar",
-             affiliation: "開発部",
-             user_id: 1001,
-             uid: 1001,
-             superior:    true,
-             activated: true,
-             activated_at: Time.zone.now)
+            email: "jocho@railstutorial.org",
+            password:              "foobar",
+            password_confirmation: "foobar",
+            affiliation: "開発部",
+            user_id: 1001,
+            uid: 1001,
+            superior:    true,
+            activated: true,
+            activated_at: Time.zone.now)
+             
+# User.create!(name:  "上長2",
+#             email: "jocho2@railstutorial.org",
+#             password:              "foobar",
+#             password_confirmation: "foobar",
+#             affiliation: "開発部",
+#             user_id: 1001,
+#             uid: 1001,
+#             superior:    true,
+#             activated: true,
+#             designated_work_start_hour:
+#             designated_work_end_hour:
+#             activated_at: Time.zone.now)             
 # 99.times do |n|
 #   name  = Faker::Name.name
 #   email = "example-#{n+1}@railstutorial.org"

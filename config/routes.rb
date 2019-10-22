@@ -13,9 +13,9 @@ Rails.application.routes.draw do
   post '/attendance/applied', to: 'attendance#update_applied_attendance', as: 'update_applied_attendance'
 
   # 残業申請関係
-  get '/attendance/overtime', to: 'attendance#edit_overtime', as: 'edit_overtime_attendance'
-  post '/attendance/overtime', to: 'attendance#overtime_application', as: 'overtime_application'
-  post '/attendance/one_overtime', to: 'attendance#one_overtime_application', as: 'one_overtime_application'
+  get '/attendance/overtime', to: 'attendances#edit_overtime', as: 'edit_overtime_attendance'
+  post '/attendance/overtime', to: 'attendances#overtime_application', as: 'overtime_application'
+  post '/attendance/one_overtime', to: 'attendances#one_overtime_application', as: 'one_overtime_application'
   
   # 1ヵ月分勤怠の確認申請関係
   post '/users/onemonth', to: 'users#onemonth_application', as: 'onemonth_application'
@@ -36,7 +36,7 @@ Rails.application.routes.draw do
   # end
   
   # CSVインポート
-  post '/csv_import' , to: 'users#import', as: 'import'
+  post '/import' , to: 'users#import', as: 'import'
   
   # CSV出力用
   get '/user_att_export', to: 'users#att_export', as: 'att_export'
