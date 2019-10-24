@@ -11,7 +11,7 @@
     </h4>
   </div>
   <div id="overtime_work_modal" class="white-popup mfp-with-anim mfp-hide">
-        <h4 align="center">【 <%= @user.name %> からの残業申請】</h4>
+        <h4 align="center">【 <%= name %> からの残業申請】</h4>
         <%= form_tag overtime_application_path, method: :post do %>
           <%= hidden_field_tag :id, @user.id %>
           <%= hidden_field_tag :first_day, @first_day %>  
@@ -76,7 +76,7 @@
           </tbody>
         </table>
       <% end %>
-      <div><%= submit_tag "変更を送信する", style:"width:200px", class: "btn btn-lg btn-primary" %></div>
+      <div align="center"><%= submit_tag "変更を送信する", style:"width:200px", class: "btn btn-lg btn-primary" %></div>
     <% end %>
   </div>
 <% end %>

@@ -11,18 +11,16 @@ class UsersController < ApplicationController
   
   def show
     if current_user.admin?
-      @user = User.find(params[:id])
-    else
-      @user = current_user
+      redirect_to :action => 'index'
     end
-    
+    @user = User.find(params[:id])
     # 曜日表示用に使用する
     @day_of_week = %w[日 月 火 水 木 金 土]
-    # if @day_of_week == 1
-    #   fontcolor == red
-    # elsif @day_of_week == 6
-    #   fontcolor == blue
-    # end
+    if @day_of_week == [0]
+      fontcolor == red
+    elsif @day_of_week == [6]
+      fontcolor == blue
+    end
     
     #基本情報
     @basic_info = BasicInfo.find_by(id: 1)
