@@ -16,11 +16,11 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     # 曜日表示用に使用する
     @day_of_week = %w[日 月 火 水 木 金 土]
-    if @day_of_week == [0]
-      fontcolor == red
-    elsif @day_of_week == [6]
-      fontcolor == blue
-    end
+    # if @day_of_week == [0]
+    #   fontcolor == red
+    # elsif @day_of_week == [6]
+    #   fontcolor == blue
+    # end
     
     #基本情報
     @basic_info = BasicInfo.find_by(id: 1)
@@ -120,6 +120,8 @@ class UsersController < ApplicationController
     @work_sum = 0
     @attendances.where.not(attendance_time: nil, leaving_time: nil).each do |attendance|
       @work_sum += attendance.leaving_time - attendance.attendance_time
+      # 自分に申請中の残業一覧を取得		
+      @attendances_over = @attendances.where.not(scheduled_end_time: nil, authorizer_user_id: nil)
     end
     @work_sum /= 3600
 
@@ -176,6 +178,10 @@ class UsersController < ApplicationController
     end
   end
   
+  def show_confirm		
+    @user = User.find(params[:id])		
+    redirect_to user_url(@user, params: { id: @user.id, first_day: params[:first_day] })		
+  end
 
   def edit_basic_info
     @user = User.find(1)

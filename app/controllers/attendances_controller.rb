@@ -2,70 +2,6 @@ class AttendancesController < ApplicationController
   before_action :logged_in_user, only: [:index, :edit, :update_all, :destroy]
   before_action :admin_or_correct_user,   only: [:edit]  
   
-  # # 出勤/退勤（ICcard用）
-  # def card_id
-  #   puts "アクセスされました"
-  #   puts params
-  #   puts "アクセスされました2"
-  #   str = "ledred=0&ledgreen=0&ledblue=1&brightness=255&ledtime=2000&ledbring =0&ledbringinterval=0&sound=1&soundno=6&soundvolume=255"
-  #   render plain: str
-  #   return
-  #   # パラメータが取得できなかったら何もしない
-  #   if params[:uid].nil? || params[:tid].nil?
-  #     flash[:error] = "パラメータが正しく取得できませんでした"
-  #     redirect_to users_path
-  #     return
-  #   end
-    
-  #   # uidからuserを判別
-  #   @user = User.find_by(uid: params[:uid])
-  #   # ユーザ取得できなかったら何もせずアクション抜ける
-  #   if @user.nil?
-  #     flash[:error] = "カードID:#{params[:uid]}のユーザが見つかりませんでした"
-  #     redirect_to users_path
-  #     return
-  #   end
-    
-  #   # 更新する勤怠データを取得
-  #   @attendance = @user.attendances.find_by(day: Date.current)
-  #   # データがないなら新規作成
-  #   if @attendance.nil?
-  #     @attendance = Attendance.create(user_id: @user.id, day: Date.current)
-  #     @attendance.save
-  #   end
-    
-  #   # 拠点情報を取得
-  #   @base_point = BasePoint.find_by(id: params[:tid].to_i)
-  #   # 取得できなかったら出勤or退勤しない
-  #   if @base_point.nil?
-  #     flash[:error] = "拠点番号#{params[:tid].to_i}が見つかりませんでした"
-  #     redirect_to @user
-  #     return
-  #   end
-    
-  #   # 拠点の種類に応じて出勤/退勤を分岐 @note 現在の条件は仮設定
-  #   if @base_point.attendance_time?
-  #     # 出社時刻を更新 @note 秒数以下は切り捨て
-  #     if !@attendance.update_column(:attendance_time, Time.at((DateTime.current.to_i / 60) * 60))
-  #       flash[:error] = "出社時間の入力に失敗しました"
-  #     end
-  #   elsif @base_point.leaving_time?
-  #     # 退社時刻を更新 @note 秒数以下は切り捨て　15分区切りの切り捨て
-  #     if !@attendance.update_column(:leaving_time, Time.at((DateTime.current.to_i / 60) * 60))
-  #       flash[:error] = "退社時間の入力に失敗しました"
-  #     end
-  #   end
-    
-  #   str = "
-  #   res=01 
-  #   snd=1002 
-  #   lmp=01 
-  #   sts=01 
-  #   fnc=00"
-  #   render :text => str
-  #   # redirect_to @user
-  # end
-  
   # 出勤・退社ボタン押下
   def attendance_update
     # 更新する勤怠データを取得
@@ -326,7 +262,7 @@ class AttendancesController < ApplicationController
         attendance.applying1!
         # 申請者の番号も保持
         @user.update_attributes(applied_last_time_user_id: item[:authorizer_user_id])
-      elseAttendance
+      else
         # 空なら上書きで空とならないよう既存のものをセット
         item[:authorizer_user_id] = attendance.authorizer_user_id
       end
@@ -448,4 +384,38 @@ class AttendancesController < ApplicationController
     redirect_to user_url(@user, params: { id: @user.id, first_day: params[:first_day] })
   end
   
+  private		  
+    def user_params		
+      params.require(:user).permit(:name, :email, :affiliation,		
+                                    :password, :password_confirmation)		
+    end		
+    		
+    # beforeアクション		
+    # ログイン済みユーザーかどうか確認		
+    def logged_in_user		
+      unless logged_in?		
+        store_location		
+        flash[:danger] = "Please log in."		
+        redirect_to login_url		
+      end		
+    end		
+    		
+    # 正しいユーザーかどうか確認		
+    def correct_user		
+      @user = User.find(params[:id])		
+      redirect_to(root_url) unless current_user?(@user)		
+    end		
+    		
+    # 管理者かどうか確認		
+    def admin_user		
+      redirect_to(root_url) unless current_user.admin?		
+    end		
+    		
+    # 正しいユーザーor管理者かどうか確認		
+    def admin_or_correct_user		
+      @user = User.find(params[:id])		
+      if !current_user?(@user) && !current_user.admin?		
+        redirect_to(root_url)		
+      end		
+    end
 end

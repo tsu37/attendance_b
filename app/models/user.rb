@@ -100,9 +100,4 @@ class User < ApplicationRecord
       all #全て表示。User.は省略
     end
   end
-  
-    # 更新を許可するカラムを定義
-  def self.updatable_attributes
-    ["id", "name", "email", "affiliation", "user_id", "uid", "password", "basic_work_hour", "designated_work_start_hour", "designated_work_end_hour", "admin", "superior"]
-  end
 end

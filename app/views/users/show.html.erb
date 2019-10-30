@@ -91,7 +91,12 @@
               data-type="#Modal"
               data-date="<%= attendance.day.month %>/<%= attendance.day.day %>"
               data-hidden_date="<%= attendance.day.month %>/<%= attendance.day.day %>"
-              data-day_of_week="<%= @day_of_week[attendance.day.wday] %>">
+              data-day_of_week="<%= @day_of_week[attendance.day.wday] %>"
+              data-scheduled_end_hour="<%= attendance.scheduled_end_hour%>"
+              data-next-day="<%= check_box_tag :check %>"
+              data-business-processing="<%= attendance.business_processing%>"
+              data-applying="<%= %>"
+            >
               残業申請
             </button>
             <div class="modal fade" id="Modal">
@@ -128,19 +133,19 @@
                           <%= @day_of_week[attendance.day.wday] %>
                         </td>
                         <!-- 終了予定時間の表示  -->
-                        <td class="table-body">
-                          <%= f.datetime_select :scheduled_end_hour, {discard_year: true, discard_month: true, discard_day: true, include_blank: true}, {class: "form-control bootstrap-date-only-width scheduled_end_hour"} %>
+                        <td class="table-body modal-scheduledEndhour">
+                          <%= f.time_field :scheduled_end_hour, {class: 'form-control'}  %>
                         </td>
                         <!-- 翌日のチェックボックスの表示  -->
-                        <td class="table-body">
+                        <td class="table-body modal-next-day">
                           <%= check_box_tag :check %>
                         </td>
                         <!-- 業務処理内容の表示  -->
-                        <td class="table-body">
+                        <td class="table-body modal-business-processing">
                           <%= f.text_field :business_processing, class: 'form-control'%>
                         </td>
                         <!-- 指示者確認印の表示  -->
-                        <td class="table-body">
+                        <td class="table-body modal-applying">
                           <% if !attendance.authorizer_user_id.blank? && !User.find_by(id: attendance.authorizer_user_id).blank? %>
                             <% if attendance.applying? %>
                               <%= User.find_by(id: attendance.authorizer_user_id).name %>へ申請中
@@ -295,6 +300,12 @@
   </table>
   
   <script>
+  // // モーダルの値を初期化
+  // $("#attendance_scheduled_end_hour_4i").val("");
+  // $("#attendance_scheduled_end_hour_5i").val("");
+  // $("#check").val("");
+  // $("#attendance_business_processing").val("");
+  // $("#attendance_authorizer_user_id").val("");
    //モーダルに日付と曜日を持たせる処理 
    $('#Modal').on('show.bs.modal', function (event) { // ボタンがクリックされてモーダルが開いたらイベント発生
    　
@@ -320,6 +331,13 @@
     var day_of_week = button.data('day_of_week');
     var modal =$(this);
     modal.find('.modal-dayOfWeek').text(day_of_week);
+    
+    var button = $(event.relatedTarget);
+    var scheduled_end_hour = button.data('scheduled_end_hour');
+    var modal =$(this);
+    modal.find('.modal-scheduledEndhour').text(scheduled_end_hour(4i),scheduled_end_hour(5i));
+    
+    
 
    });
   </script>

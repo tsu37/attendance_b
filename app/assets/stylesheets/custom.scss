@@ -236,3 +236,39 @@ span.picture {
   padding-top: 9px;
   list-style: none
 }
+
+td.table-body.modal-next-day{
+  padding: 15px;
+  padding-top: 10px;
+  width: 10%;
+}
+
+td.table-body.modal-date {
+  padding-top: 25px;
+  width: 10%;
+}
+
+td.table-body.modal-dayOfWeek {
+  padding-top: 25px;
+  width: 10%;
+}
+
+td.table-body.modal-scheduledEndhour {
+  padding-top: 25px;
+  width: 10%;
+}
+
+td.table-body.modal-next-day {
+  padding-top: 25px;
+  width: 10%;
+}
+
+td.table-body.modal-business-processing {
+  padding-top: 25px;
+}
+
+.modal-content{
+  width: 50%;
+  margin-top: 10%;
+  margin-left: 25%
+}
