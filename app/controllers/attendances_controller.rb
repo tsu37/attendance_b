@@ -76,7 +76,7 @@ class AttendancesController < ApplicationController
   end
   
   def edit_all
-    # byebug
+    byebug
     @user = User.find(params[:id])
     error_count = attendances_check
     if error_count > 0 
@@ -287,7 +287,7 @@ class AttendancesController < ApplicationController
     @user = User.find(params[:attendance][:user_id])
     
     # 終了予定時刻が空なら何もしない
-    if params[:attendance]["scheduled_end_hour(4i)"].blank? || params[:attendance]["scheduled_end_hour(5i)"].blank?
+    if params[:attendance]["scheduled_end_hour"].blank?
       flash[:danger] = "残業申請の終了予定時刻が空です"
       redirect_to user_url(@user, params: { id: @user.id, first_day: params[:attendance][:first_day] })
       return

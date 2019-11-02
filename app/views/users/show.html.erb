@@ -87,19 +87,15 @@
         <tr>
           <!-- 残業申請 -->
           <td class="table-body">
-            <button type="button" class="btn-primary btn-sm" data-toggle="modal" data-target=#Modal
+            <button type="button" class="btn-primary btn-sm" data-toggle="modal" data-target=#Modal<%= attendance.id %>
               data-type="#Modal"
               data-date="<%= attendance.day.month %>/<%= attendance.day.day %>"
               data-hidden_date="<%= attendance.day.month %>/<%= attendance.day.day %>"
               data-day_of_week="<%= @day_of_week[attendance.day.wday] %>"
-              data-scheduled_end_hour="<%= attendance.scheduled_end_hour%>"
-              data-next-day="<%= check_box_tag :check %>"
-              data-business-processing="<%= attendance.business_processing%>"
-              data-applying="<%= %>"
             >
               残業申請
             </button>
-            <div class="modal fade" id="Modal">
+            <div class="modal fade" id="Modal<%= attendance.id %>">
               <!-- モーダルコンテント:モーダルに表示させる内容-->
               <div class="modal-content" id="attendance<%= attendance.id %>">
                 <!-- モーダルコンテントのヘッダー部分-->
@@ -300,12 +296,6 @@
   </table>
   
   <script>
-  // // モーダルの値を初期化
-  // $("#attendance_scheduled_end_hour_4i").val("");
-  // $("#attendance_scheduled_end_hour_5i").val("");
-  // $("#check").val("");
-  // $("#attendance_business_processing").val("");
-  // $("#attendance_authorizer_user_id").val("");
    //モーダルに日付と曜日を持たせる処理 
    $('#Modal').on('show.bs.modal', function (event) { // ボタンがクリックされてモーダルが開いたらイベント発生
    　
@@ -331,13 +321,7 @@
     var day_of_week = button.data('day_of_week');
     var modal =$(this);
     modal.find('.modal-dayOfWeek').text(day_of_week);
-    
-    var button = $(event.relatedTarget);
-    var scheduled_end_hour = button.data('scheduled_end_hour');
-    var modal =$(this);
-    modal.find('.modal-scheduledEndhour').text(scheduled_end_hour(4i),scheduled_end_hour(5i));
-    
-    
+}
 
    });
   </script>
