@@ -12,19 +12,19 @@ class Attendance < ApplicationRecord
     params.permit attendances: [:attendance_time, :leaving_time, :remarks]
   end
   
-  # class << self
-  #   def localed_application_statuses
-  #     application_states.keys.map do |s|
-  #       [ApplicationController.helpers.t("application_status.article.#{s}"), s]
-  #     end
-  #   end
-  # end
+  class << self
+    def localed_application_statuses
+      application_states.keys.map do |s|
+        [ApplicationController.helpers.t("application_status.article.#{s}"), s]
+      end
+    end
+  end
   
-  # class << self
-  #   def localed_application_edit_statuses
-  #     application_edit_states.keys.map do |s|
-  #       [ApplicationController.helpers.t("application_edit_states.article.#{s}"), s]
-  #     end
-  #   end
-  # end
+  class << self
+    def localed_application_edit_statuses
+      application_edit_states.keys.map do |s|
+        [ApplicationController.helpers.t("application_edit_states.article.#{s}"), s]
+      end
+    end
+  end
 end
