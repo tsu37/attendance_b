@@ -130,7 +130,7 @@
                         </td>
                         <!-- 終了予定時間の表示  -->
                         <td class="table-body modal-scheduledEndhour">
-                          <%= f.time_field :scheduled_end_hour, {class: 'form-control'}  %>
+                          <%= f.datetime_select :scheduled_end_hour, {discard_year: true, discard_month: true, discard_day: true, include_blank: true}, {class: "form-control bootstrap-date-only-width scheduled_end_hour"} %>
                         </td>
                         <!-- 翌日のチェックボックスの表示  -->
                         <td class="table-body modal-next-day">
@@ -221,8 +221,8 @@
           <!-- 時間外の表示  -->
           <td class="table-body">
             <% if !@user.designated_work_end_hour.blank? && !attendance.scheduled_end_hour.blank? %>
-              <% if (Time.new(attendance.scheduled_end_hour.year, attendance.scheduled_end_hour.month, attendance.scheduled_end_hour.day, attendance.scheduled_end_hour.hour, attendance.scheduled_end_hour.min) - Time.new(attendance.day.year, attendance.day.month, attendance.day.day, @user.designated_work_end_time.hour, @user.designated_work_end_time.min)) > 0 %>
-                <%= format("%.2f", (Time.new(attendance.scheduled_end_hour.year, attendance.scheduled_end_hour.month, attendance.scheduled_end_hour.day, attendance.scheduled_end_hour.hour, attendance.scheduled_end_hour.min) - Time.new(attendance.day.year, attendance.day.month, attendance.day.day, @user.designated_work_end_time.hour, @user.designated_work_end_time.min))/3600) %>
+              <% if (Time.new(attendance.scheduled_end_hour.year, attendance.scheduled_end_hour.month, attendance.scheduled_end_hour.day, attendance.scheduled_end_hour.hour, attendance.scheduled_end_hour.min) - Time.new(attendance.day.year, attendance.day.month, attendance.day.day, @user.designated_work_end_hour.hour, @user.designated_work_end_hour.min)) > 0 %>
+                <%= format("%.2f", (Time.new(attendance.scheduled_end_hour.year, attendance.scheduled_end_hour.month, attendance.scheduled_end_hour.day, attendance.scheduled_end_hour.hour, attendance.scheduled_end_hour.min) - Time.new(attendance.day.year, attendance.day.month, attendance.day.day, @user.designated_work_end_hour.hour, @user.designated_work_end_hour.min))/3600) %>
               <% end %>
             <% end %>
           </td>
@@ -258,17 +258,17 @@
             <%= format("%.2f", total_present_time) %>
           </td>
           <td colspan="1" class="table-body"></td>
-          <!-- 終了予定時間(時)の表示  -->
+           <!--終了予定時間(時)の表示  -->
           <td class="table-body"> </td>
-          <!-- 終了予定時間(分)の表示  -->
+           <!--終了予定時間(分)の表示  -->
           <td class="table-body"> </td>
-          <!-- 時間外の表示  -->
+           <!--時間外の表示  -->
           <td class="table-body"> </td>
-          <!-- 業務処理の表示  -->
+           <!--業務処理の表示  -->
           <td class="table-body"> </td>
-          <!-- 指示確認㊞の表示  -->
+           <!--指示確認㊞の表示  -->
           <td class="table-body"> </td>
-          <!-- 業務処理の表示  -->
+           <!--業務処理の表示  -->
           <td class="table-body"> </td>
           <!-- 指示確認㊞の表示  -->
           <td class="table-body">所属長承認　

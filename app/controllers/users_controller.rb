@@ -316,7 +316,8 @@ class UsersController < ApplicationController
 
     def user_params
       params.require(:user).permit(:name, :email, :password,:affiliation,
-                                   :basic_work_hour, :design_work_hour, :password_confirmation)
+                                   :basic_work_hour, :design_work_hour, :password_confirmation,
+                                   :designated_work_start_hour, :designated_work_end_hour)
     end
     
     # beforeアクション

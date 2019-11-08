@@ -283,11 +283,11 @@ class AttendancesController < ApplicationController
   
   # 1日分の残業を申請する
   def one_overtime_application
-    byebug
+    # byebug
     @user = User.find(params[:attendance][:user_id])
     
     # 終了予定時刻が空なら何もしない
-    if params[:attendance]["scheduled_end_hour"].blank?
+    if params[:attendance]["scheduled_end_hour(4i)"].blank? || params[:attendance]["scheduled_end_hour(5i)"].blank?
       flash[:danger] = "残業申請の終了予定時刻が空です"
       redirect_to user_url(@user, params: { id: @user.id, first_day: params[:attendance][:first_day] })
       return
@@ -313,8 +313,7 @@ class AttendancesController < ApplicationController
     attendance.update_attributes(params.require(:attendance).permit(:business_processing, :authorizer_user_id, :application_state))
     
     # 終了予定時間があれば更新
-    byebug
-    if !params[:attendance]["scheduled_end_hour"].blank?
+    if !params[:attendance]["scheduled_end_hour(4i)"].blank? || !params[:attendance]["scheduled_end_hour(5i)"].blank?
       attendance.update_column(:scheduled_end_hour, Time.zone.local(attendance.day.year, attendance.day.month, attendance.day.day, params[:attendance]["scheduled_end_hour(4i)"].to_i, params[:attendance]["scheduled_end_hour(5i)"].to_i))
     end
     

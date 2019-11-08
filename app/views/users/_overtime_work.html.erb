@@ -39,10 +39,11 @@
                     <td class="table-body"><%= @day_of_week[attendance.day.wday] %></td>
                     <!-- 終了予定時間の表示  -->
                     <td class="table-body">
-                      <%= attendance.scheduled_end_hour.hour if !attendance.scheduled_end_hour.blank? %>
+                      <%= attendance.scheduled_end_hour.hour if !attendance.scheduled_end_hour.blank? %>: <%= attendance.scheduled_end_hour.min if !attendance.scheduled_end_hour.blank? %>
                     </td>
-                    <!-- 指定勤務終了予定時間の表示  -->
+                    <!-- 指定勤務終了時間の表示  -->
                     <td class="table-body">
+                      <%= format("%.2f", ((User.find_by(name: name).designated_work_end_hour.strftime("%H").to_i*60.0) + User.find_by(name: name).designated_work_end_hour.strftime("%M").to_i)/60) %>
                     </td>
                     <!-- 時間外時間の表示  -->
                     <td class="table-body">
