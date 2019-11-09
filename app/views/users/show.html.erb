@@ -5,10 +5,10 @@
         <tr>
           <th class="table-header">
             <%= link_to "←",user_url(params: { id: @user.id, first_day: @first_day.prev_month }),  
-              style:"color:black", class: 'btn' %>
+              style:"color:black", class: 'btn' if current_user == @user %>
               <%= @first_day.strftime("%Y年%m月") %> 時間管理表
                 <%= link_to "→", user_url(params: { id: @user.id, first_day: @first_day.next_month }), 
-              style:"color:black", class: 'btn' %>
+              style:"color:black", class: 'btn' if current_user == @user %>
           </th>
           <th class="table-header"> 指定勤務時間:
             <%= format("%.2f", ((@user.design_work_hour.hour*60.0) + @user.design_work_hour.min)/60) if !@user.nil? && !@user.design_work_hour.nil? %>
@@ -159,7 +159,6 @@
                   </table>
                   <%= f.submit "変更を送信する", class: "btn btn-md btn-primary" %>
                 </div>
-                <!--<button class="btn btn-lg btn-primary">変更を送信する</button>-->
               </div>
               <% end %>
             </div>
@@ -298,30 +297,28 @@
   <script>
    //モーダルに日付と曜日を持たせる処理 
    $('#Modal').on('show.bs.modal', function (event) { // ボタンがクリックされてモーダルが開いたらイベント発生
-   　
-    // クリックされたbuttonを取得
-    var button = $(event.relatedTarget); 
-
-    // 上記の中の、data-dateの値を取得
-    var date = button.data('date'); 
-
-    // クリックされているsampleModal要素を取得
-    var modal = $(this); 
-
-    // sampleModalの中のmodal-dateという要素を取得し、そこにdata-dateの値を入れる。これでクリックした日付の日付がモーダル内に入る
-    modal.find('.modal-date').text(date); 
-
-    // 日付をhiddenで送信したかったので上記と同様に処理
-    var button = $(event.relatedTarget);
-    var hidden_date = button.data('hidden_date');
-    var modal =$(this);
-    modal.find('.modal-hiddenDate').val(hidden_date);
-    
-    var button = $(event.relatedTarget);
-    var day_of_week = button.data('day_of_week');
-    var modal =$(this);
-    modal.find('.modal-dayOfWeek').text(day_of_week);
-}
-
+      // クリックされたbuttonを取得
+      var button = $(event.relatedTarget); 
+  
+      // 上記の中の、data-dateの値を取得
+      var date = button.data('date'); 
+  
+      // クリックされているsampleModal要素を取得
+      var modal = $(this); 
+  
+      // sampleModalの中のmodal-dateという要素を取得し、そこにdata-dateの値を入れる。これでクリックした日付の日付がモーダル内に入る
+      modal.find('.modal-date').text(date); 
+  
+      // 日付をhiddenで送信したかったので上記と同様に処理
+      var button = $(event.relatedTarget);
+      var hidden_date = button.data('hidden_date');
+      var modal =$(this);
+      modal.find('.modal-hiddenDate').val(hidden_date);
+      
+      var button = $(event.relatedTarget);
+      var day_of_week = button.data('day_of_week');
+      var modal =$(this);
+      modal.find('.modal-dayOfWeek').text(day_of_week);
+    }
    });
   </script>

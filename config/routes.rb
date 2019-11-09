@@ -30,10 +30,10 @@ Rails.application.routes.draw do
       get 'attendance_index', to: 'users#attendance_index'
     end
 
-  # # ユーザ関係
-  # resources :users do
-  #   collection { post :import }
-  # end
+  # ユーザ関係
+  resources :users do
+    collection { post :import }
+  end
   
   # CSVインポート
   post '/import' , to: 'users#import', as: 'import'
@@ -47,5 +47,8 @@ Rails.application.routes.draw do
   # 拠点情報関係
   resources :base_points
   post '/base_point/create',  to: 'base_points#create', as: 'base_point_create'
+  
+  # 上長の勤怠確認ページ
+  get '/show_confirm', to: 'users#show', as: 'show'
   
 end

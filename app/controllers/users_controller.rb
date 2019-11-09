@@ -4,9 +4,7 @@ class UsersController < ApplicationController
   before_action :admin_user,     only: [:index, :edit_basic_info, :update_basic_info, :destroy]
 
   def index
-    
     @users = User.paginate(page: params[:page])
-    # @users = User.where(activated: true).paginate(page: params[:page]).search(params[:search])
   end
   
   def show
@@ -16,11 +14,6 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     # 曜日表示用に使用する
     @day_of_week = %w[日 月 火 水 木 金 土]
-    # if @day_of_week == [0]
-    #   fontcolor == red
-    # elsif @day_of_week == [6]
-    #   fontcolor == blue
-    # end
     
     #基本情報
     @basic_info = BasicInfo.find_by(id: 1)
@@ -98,7 +91,6 @@ class UsersController < ApplicationController
   
   def att_export
     @user = User.find(params[:id])
-    # @user = User.all
     # 曜日表示用に使用する
     @day_of_week = %w[日 月 火 水 木 金 土]
     # 基本情報取得
@@ -259,7 +251,6 @@ class UsersController < ApplicationController
   
     # 1ヵ月分の勤怠申請
   def onemonth_application
-    byebug
     @user = User.find_by(id: params[:one_month_attendance][:application_user_id])
     # 申請先が空なら何もしない
     if params[:one_month_attendance][:authorizer_user_id].blank?
@@ -319,6 +310,10 @@ class UsersController < ApplicationController
       params.require(:user).permit(:name, :email, :password,:affiliation,
                                    :basic_work_hour, :design_work_hour, :password_confirmation,
                                    :designated_work_start_hour, :designated_work_end_hour)
+    end
+    
+    def one_month_attendance_params
+      params.require(:one_month_attendance).permit(:application_user_id, :authorizer_user_id, :application_date, :application_state)
     end
     
     # beforeアクション

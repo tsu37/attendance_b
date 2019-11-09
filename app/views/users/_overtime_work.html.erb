@@ -67,6 +67,7 @@
                     </td>
                     <!-- 申請者の勤怠を確認するボタンの表示  -->
                     <td class="table-body">
+                      <%= link_to "確認", show_url(params: { id: attendance.user_id, first_day: attendance.day.beginning_of_month }), method: :get, style:"color:white", class: 'btn btn-default btn-primary' %>
                     </td>
                   </tr>
                 <% end %>
