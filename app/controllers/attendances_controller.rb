@@ -76,7 +76,7 @@ class AttendancesController < ApplicationController
   end
   
   def edit_all
-    byebug
+    # byebug
     @user = User.find(params[:id])
     error_count = attendances_check
     if error_count > 0 

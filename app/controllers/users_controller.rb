@@ -259,6 +259,7 @@ class UsersController < ApplicationController
   
     # 1ヵ月分の勤怠申請
   def onemonth_application
+    byebug
     @user = User.find_by(id: params[:one_month_attendance][:application_user_id])
     # 申請先が空なら何もしない
     if params[:one_month_attendance][:authorizer_user_id].blank?
