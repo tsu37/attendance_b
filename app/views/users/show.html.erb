@@ -48,6 +48,8 @@
   <!--attendance_edit_pathに、userのidと今月の値を渡す-->
   <%= link_to "勤怠を編集", edit_attendance_path(@attendances, params: { id: @user.id, first_day: @first_day }), :style=>"color:white;", class: "btn btn-sm btn-primary"  %>
   <%= link_to "CSV出力", att_export_path(@attendance, params: { id: @user.id, first_day: @first_day, format: :csv}), :style=>"color:white;", class: "btn btn-sm btn-primary" %>
+  <%= render 'edit_attendance_log' if current_user == @user %>
+  
   <table class="table table-bordered table-striped table-condensed">
     <thead align="center">
       <tr>
@@ -252,11 +254,12 @@
         <tr>
           <td colspan="2" class="table-body"></td>
           <td colspan="6" class="table-body"></td>
-          <!-- 合計在社時間の表示 -->
           <td class="table-body">
+          </td>
+          <!-- 合計在社時間の表示 -->
+          <td colspan="1" class="table-body">
             <%= format("%.2f", total_present_time) %>
           </td>
-          <td colspan="1" class="table-body"></td>
            <!--終了予定時間(時)の表示  -->
           <td class="table-body"> </td>
            <!--終了予定時間(分)の表示  -->

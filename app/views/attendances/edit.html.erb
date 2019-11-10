@@ -31,10 +31,10 @@
         <th class="table-header">曜日</th>
         <th class="table-header">出社</th>
         <th class="table-header">退社</th>
+        <th class="table-header">翌日</th>
         <th class="table-header">在社時間</th>
         <th class="table-header">備考</th>
-        <th class="table-header">残業指示</th>
-        <th class="table-header">指示者</th>        
+        <th class="table-header">指示者確認㊞</th>        
       </tr>
     </thead>
     <tbody>
@@ -44,22 +44,27 @@
               <td class="table-body"><%= attendance.day.month %>/<%= attendance.day.day %></td>
               <td class="table-body"><%= @day_of_week[attendance.day.wday] %></td>
               
-                <!-- 出社時間の表示  -->
-                <td class="table-body">
-                  <%= f.time_field :attendance_time, {class: 'form-control'}  %>
-                </td>
-                
-                <!-- 退社時間の表示  -->
-                <td class="table-body">
-                  <%= f.time_field  :leaving_time, {class: "form-control bootstrap-date-only-width leaving_time"} %>
-                </td>
+              <!-- 出社時間の表示  -->
+              <td class="table-body">
+                  <%= f.datetime_select :edited_work_start, {discard_year: true, discard_month: true, discard_day: true, include_blank: true}, {class: "form-control bootstrap-date-only-width edited_work_start"} %>
+              </td>
+              
+              <!-- 退社時間の表示  -->
+              <td class="table-body">
+                  <%= f.datetime_select :edited_work_end, {discard_year: true, discard_month: true, discard_day: true, include_blank: true}, {class: "form-control bootstrap-date-only-width edited_work_end"} %>
+              </td>
 
-                <!-- 在社時間の表示  -->
-                <td class="table-body">
-                  <% if !attendance.attendance_time.nil? && !attendance.leaving_time.nil? %>
-                    <%= format("%.2f", (attendance.leaving_time - attendance.attendance_time)/3600) %>
-                  <% end %>
-                </td>
+              <!-- 翌日の表示  -->
+              <td class="table-body">
+                <%= check_box_tag :check %>
+              </td>
+              
+              <!-- 在社時間の表示  -->
+              <td class="table-body">
+                <% if !attendance.attendance_time.nil? && !attendance.leaving_time.nil? %>
+                  <%= format("%.2f", (attendance.leaving_time - attendance.attendance_time)/3600) %>
+                <% end %>                
+              </td>
               
               <!-- 備考の表示  -->
               <td class="table-body">
@@ -68,12 +73,17 @@
               
               <!-- 残業指示の表示  -->
               <td class="table-body">
-                <%= f.text_field  :remarks, class: 'form-control'%>
-              </td>
-              
-              <!-- 指示者の表示  -->
-              <td class="table-body">
-                <%= f.text_field  :remarks, class: 'form-control'%>
+                <% if !attendance.authorizer_user_id_of_attendance.blank? && !User.find_by(id: attendance.authorizer_user_id_of_attendance).blank? %>
+                  <% if attendance.applying1? %>
+                    <%= User.find_by(id: attendance.authorizer_user_id_of_attendance).name %>へ申請中
+                  <% elsif attendance.approval2? %>
+                    <%= User.find_by(id: attendance.authorizer_user_id_of_attendance).name %>から承認済
+                  <% elsif attendance.denial3? %>
+                    <%= User.find_by(id: attendance.authorizer_user_id_of_attendance).name %>から否認
+                  <% else %>
+                  <% end %>
+                <% end %>
+                <%= f.collection_select :authorizer_user_id_of_attendance, @superior_users, :id, :name, {:include_blank => true, :selected => 0}, {:class => "form-control authorizer_user_id_of_attendance"} %>
               </td>
             </tr>
             <% end %>
