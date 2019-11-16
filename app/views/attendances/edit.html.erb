@@ -68,7 +68,7 @@
               <% end %>
               <!-- 翌日の表示  -->
               <td class="table-body">
-                <%= check_box_tag :check %>
+                <%= check_box_tag 'check[]', attendance.day %>
               </td>
               
               <!-- 在社時間の表示  -->
