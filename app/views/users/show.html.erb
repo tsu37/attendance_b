@@ -42,8 +42,8 @@
     </thead>
   </table>
   
-  <%= render 'edit_attendance' if current_user == @user %>
   <%= render 'one_month_attendance' if current_user == @user %>
+  <%= render 'edit_attendance' if current_user == @user %>  
   <%= render 'overtime_work' if current_user == @user %>
   <!--attendance_edit_pathに、userのidと今月の値を渡す-->
   <%= link_to "勤怠を編集", edit_attendance_path(@attendances, params: { id: @user.id, first_day: @first_day }), :style=>"color:white;", class: "btn btn-sm btn-primary"  %>
@@ -140,7 +140,7 @@
                         </td>
                         <!-- 業務処理内容の表示  -->
                         <td class="table-body modal-business-processing">
-                          <%= f.text_field :business_processing, class: 'form-control'%>
+                          <%= attendance.business_processing if !attendance.business_processing.nil? %>
                         </td>
                         <!-- 指示者確認印の表示  -->
                         <td class="table-body modal-applying">
@@ -250,29 +250,12 @@
           </td>          
         </tr>
         <% end %>
-        
         <tr>
+          <td class="table-body"></td>
           <td colspan="2" class="table-body"></td>
           <td colspan="6" class="table-body"></td>
-          <td class="table-body">
-          </td>
-          <!-- 合計在社時間の表示 -->
-          <td colspan="1" class="table-body">
-            <%= format("%.2f", total_present_time) %>
-          </td>
-           <!--終了予定時間(時)の表示  -->
-          <td class="table-body"> </td>
-           <!--終了予定時間(分)の表示  -->
-          <td class="table-body"> </td>
-           <!--時間外の表示  -->
-          <td class="table-body"> </td>
-           <!--業務処理の表示  -->
-          <td class="table-body"> </td>
-           <!--指示確認㊞の表示  -->
-          <td class="table-body"> </td>
-           <!--業務処理の表示  -->
-          <td class="table-body"> </td>
-          <!-- 指示確認㊞の表示  -->
+          <td class="table-body"><%= format("%.2f", @work_sum) %></td>
+          <td colspan="5" class="table-body"></td>
           <td class="table-body">所属長承認　
             <% if @one_month_attendance.blank? || @one_month_attendance.authorizer_user_id.blank? %>
               未

@@ -3,8 +3,8 @@
   <div id="inline-onemonth-popups">
     <h4>
       <% if !@one_month_applications_to_me.blank? %>
-        <a id="hoge" href="#test-onemonth-popup" class="unverified-notification-strong" data-effect="mfp-zoom-in">【 所属長承認申請のお知らせ 】</a>
-        <strong class="unverified-notification-strong unverified-notification-border"><%= "#{@one_month_applications_to_me.count}件の通知があります" %></strong>  
+        <a id="hoge" href="#test-onemonth-popup" class="unverified-notification-strong" data-effect="mfp-zoom-in" style="color:red;">【 所属長承認申請のお知らせ 】</a>
+        <strong class="unverified-notification-strong unverified-notification-border" style="color:red;"><%= "#{@one_month_applications_to_me.count}件の通知があります" %></strong>  
       <% else %>
         <a id="hoge" href="#test-onemonth-popup" data-effect="mfp-zoom-in">【 所属長承認申請のお知らせ 】</a>
       <% end %>
