@@ -1,0 +1,81 @@
+<% provide(:title, @user.name) %>
+
+<%= form_tag overtime_application_path, method: :post do %>
+  <%= hidden_field_tag :id, @user.id %>
+  <%= hidden_field_tag :first_day, @first_day %>
+  <table class="txt1 table table-bordered table-striped table-condensed table-status">
+    <thead>
+      <tr>
+        <th class="table-header">日付</th>
+        <th class="table-header">曜日</th>
+        <th class="table-header">終了予定時間</th>
+        <th class="table-header">業務処理内容</th>
+        <th class="table-header">終了指示時刻</th>
+        <th class="table-header">指示者確認㊞</th>
+        <th class="table-header">時間外時間</th>
+      </tr>
+    </thead>
+    <tbody>
+        <% @attendances.each do |attendance| %>
+          <%= fields_for("attendance[]", attendance) do |f| %>
+            <tr>
+              <td class="table-body"><%= attendance.day.month %>/<%= attendance.day.day %></td>
+              <td class="table-body"><%= @day_of_week[attendance.day.wday] %></td>
+              <!-- 終了予定時間の表示  -->
+              <td class="table-body">
+                <%= f.datetime_select :scheduled_end_time, {discard_year: true, discard_month: true, discard_day: true, include_blank: true}, {class: "form-control bootstrap-date-only-width scheduled_end_time"} %>
+              </td>
+              
+              <!-- 業務処理内容の表示  -->
+              <td class="table-body">
+                <%= f.text_field :business_processing, class: 'form-control'%>
+              </td>
+              
+              <!-- 指示者確認㊞の表示  -->
+              <td class="table-body">
+                <% if !attendance.authorizer_user_id.blank? && !User.find_by(id: attendance.authorizer_user_id).blank? %>
+                  <% if attendance.applying? %>
+                    <%= User.find_by(id: attendance.authorizer_user_id).name %>へ申請中
+                  <% elsif attendance.approval? %>
+                    <%= User.find_by(id: attendance.authorizer_user_id).name %>から承認済
+                  <% elsif attendance.denial? %>
+                    <%= User.find_by(id: attendance.authorizer_user_id).name %>から否認
+                  <% else %>
+                  <% end %>
+                <% end %>
+                <%= f.collection_select :authorizer_user_id, @superior_users, :id, :name, {:include_blank => true, :selected => 0}, {:class => "form-control authorizer_user_id"} %>
+              </td>
+              
+              <!-- 時間外時間の表示  -->
+              <td class="table-body">
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+    </tbody>
+  </table>
+  <div class="center">
+    <%= link_to "キャンセル", user_url(@user, params: { id: @user.id, first_day: @first_day }), style:"width:200px; color:white", class:"btn btn-lg btn-primary" %>
+    <%= submit_tag "変更した残業を申請する", style:"width:230px", class: "btn btn-lg btn-primary" %>
+  </div>
+<% end %>
+
+<!--サブミット前にデータチェック-->
+<script>
+  $(function() {
+    $('form').submit(function() {
+      // 申請日に時間空白あれば未記入の警告を表示する
+      const $trs = $('tbody').find('tr').toArray();
+      var isBlank = $trs.some(function( tr ) {
+        var scheduled_end_time = $(tr).find('.scheduled_end_time').val();
+        var authorizer_user_id = $(tr).find('.authorizer_user_id').val();
+        return scheduled_end_time === '' && authorizer_user_id !== ''
+      });
+      
+      if (isBlank) {
+        alert("終了予定時間が空の申請日があります");
+        return false;
+      }
+    });
+  });
+</script>

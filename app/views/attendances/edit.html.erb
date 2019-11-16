@@ -43,17 +43,29 @@
             <tr>
               <td class="table-body"><%= attendance.day.month %>/<%= attendance.day.day %></td>
               <td class="table-body"><%= @day_of_week[attendance.day.wday] %></td>
-              
-              <!-- 出社時間の表示  -->
-              <td class="table-body">
-                  <%= f.datetime_select :edited_work_start, {discard_year: true, discard_month: true, discard_day: true, include_blank: true}, {class: "form-control bootstrap-date-only-width edited_work_start"} %>
-              </td>
-              
-              <!-- 退社時間の表示  -->
-              <td class="table-body">
-                  <%= f.datetime_select :edited_work_end, {discard_year: true, discard_month: true, discard_day: true, include_blank: true}, {class: "form-control bootstrap-date-only-width edited_work_end"} %>
-              </td>
-
+              <% if attendance.applying1? %>
+                <!-- 申請中なら申請時間表示 -->
+                <!-- 出社時間の表示  -->
+                <td class="table-body">
+                    <%= f.datetime_select :edited_work_start, {discard_year: true, discard_month: true, discard_day: true, include_blank: true}, {class: "form-control bootstrap-date-only-width edited_work_start"} %>
+                </td>
+                
+                <!-- 退社時間の表示  -->
+                <td class="table-body">
+                    <%= f.datetime_select :edited_work_end, {discard_year: true, discard_month: true, discard_day: true, include_blank: true}, {class: "form-control bootstrap-date-only-width edited_work_end"} %>
+                </td>
+              <% else %>
+                <!-- 未申請なら現在の時間表示 -->
+                <!-- 出社時間の表示  -->
+                <td class="table-body">
+                  <%= f.datetime_select :attendance_time, {discard_year: true, discard_month: true, discard_day: true, include_blank: true}, {class: "form-control bootstrap-date-only-width edited_work_start"} %>
+                </td>
+                
+                <!-- 退社時間の表示  -->
+                <td class="table-body">
+                  <%= f.datetime_select :leaving_time, {discard_year: true, discard_month: true, discard_day: true, include_blank: true}, {class: "form-control bootstrap-date-only-width edited_work_end"} %>
+                </td>
+              <% end %>
               <!-- 翌日の表示  -->
               <td class="table-body">
                 <%= check_box_tag :check %>
