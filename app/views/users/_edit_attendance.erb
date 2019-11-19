@@ -55,21 +55,21 @@
                   <!-- 出社 -->
                   <!-- 時 -->
                   <td class="table-body">
-                    <%= attendance.work_start.hour if !attendance.work_start.blank? %>
+                    <%= attendance.attendance_time.hour if !attendance.attendance_time.blank? %>
                   </td>
                   <!-- 分 -->
                   <td class="table-body">
-                    <%= attendance.work_start.min if !attendance.work_start.blank? %>
+                    <%= attendance.attendance_time.min if !attendance.attendance_time.blank? %>
                   </td>
                   
                   <!-- 退社 -->
                   <!-- 時 -->
                   <td class="table-body">
-                    <%= attendance.work_end.hour if !attendance.work_end.blank? %>
+                    <%= attendance.leaving_time.hour if !attendance.leaving_time.blank? %>
                   </td>
                   <!-- 分 -->
                   <td class="table-body">
-                    <%= attendance.work_end.min if !attendance.work_end.blank? %>
+                    <%= attendance.leaving_time.min if !attendance.leaving_time.blank? %>
                   </td>
                   
                   

@@ -22,7 +22,6 @@ class AttendancesController < ApplicationController
     redirect_to @user
   end
   
-  
   def leaving_update
     # 更新する勤怠データを取得
     @attendance = Attendance.find(params[:attendance][:id])
@@ -75,35 +74,8 @@ class AttendancesController < ApplicationController
     @attendances = @user.attendances.where('day >= ? and day <= ?', @first_day, @last_day).order("day ASC")
   end
   
-  def edit_all
-    # byebug
-    @user = User.find(params[:id])
-    error_count = attendances_check
-    if error_count > 0 
-      flash[:warning] = '編集項目にエラーがあります。'
-      redirect_to edit_attendance_path(@attendances, params: { id: @user.id, first_day: @first_day }) and return
-    end
-    
-    params[:attendances].each do |id, item|
-      attendance = Attendance.find(id)
-      # byebug
-      attendances_check()
-      if error_count = 0
-        item.permit
-        attendance.update_attributes(
-        attendance_time: item["attendance_time"],
-        leaving_time: item["leaving_time"],
-        remarks: item["remarks"])
-        flash[:success] = '勤怠時間を更新しました。'
-      else return
-      end
-    end
-    redirect_to user_url(@user, params:{ id: @user.id, first_day: params[:first_day]}) and return
-  end
-  
     # 申請された1ヵ月分の勤怠を更新する（承認/否認など）
   def update_onemonth_applied_attendance
-    
     # 変更チェックが1つ以上で勤怠変更情報を更新
     if !params[:check].blank?
       params[:application].each do |id, item|
@@ -111,7 +83,6 @@ class AttendancesController < ApplicationController
         if !params[:check].include?(id)
           next
         end
-        
         attendance = OneMonthAttendance.find(id)
         if attendance.blank?
           next
@@ -157,23 +128,21 @@ class AttendancesController < ApplicationController
     @attendances = @user.attendances.where('day >= ? and day <= ?', @first_day, @last_day).order("day ASC")
   end
   
-    def update_all
+  def update_all
+    # debugger
     @user = User.find(params[:id])
-    
     # 各勤怠情報を更新
     params[:attendance].each do |id, item|
       # 申請者がない行はカット
       if item["authorizer_user_id_of_attendance"].blank?
         next
       end
-      
       attendance = Attendance.find(id)
       attendance.update_attributes(item.permit(:remarks, :overtime_work, :instructor, :authorizer_user_id_of_attendance))
-      
-      # @note 初期値を変更前のカラムにするためparamsにはwork_start/endで渡しています
-      # 　　　格納先はedited_work_start/endのため注意
+      # 初期値を変更前のカラムにするためparamsにはattendance_time/leaving_timeで渡す
+      # 格納先はedited_work_start/end
       # 在社時間ーでエラー表示
-      if (item["work_start(4i)"]+item["work_start(5i)"]).to_i > (item["work_end(4i)"]+item["work_end(5i)"]).to_i
+      if (item["attendance_time(4i)"]+item["attendance_time(5i)"]).to_i > (item["leaving_time(4i)"]+item["leaving_time(5i)"]).to_i
         if params[:check].nil?
           flash[:danger] = '在社時間がーになっています'
           redirect_back(fallback_location: root_path) and return
@@ -185,7 +154,7 @@ class AttendancesController < ApplicationController
             @user.update_attributes(applied_last_time_user_id: item[:authorizer_user_id_of_attendance])
           end
         end
-      elsif item["work_start(4i)"].blank? || item["work_start(5i)"].blank? || item["work_end(4i)"].blank? || item["work_end(5i)"].blank?
+      elsif item["attendance_time(4i)"].blank? || item["attendance_time(5i)"].blank? || item["leaving_time(4i)"].blank? || item["leaving_time(5i)"].blank?
         # 申請者入力で出社/退社時間が空ならエラー表示
         flash[:danger] = '出社or退社時間が空になっています'
         redirect_back(fallback_location: root_path) and return
@@ -197,13 +166,13 @@ class AttendancesController < ApplicationController
           @user.update_attributes(applied_last_time_user_id: item[:authorizer_user_id_of_attendance])
         end
       end
-
-      if !item["work_start(4i)"].empty? || !item["work_start(5i)"].empty?
-        attendance.update_column(:edited_work_start, Time.zone.local(attendance.day.year, attendance.day.month, attendance.day.day, item["work_start(4i)"].to_i, item["work_start(5i)"].to_i))
+  
+      if !item["attendance_time(4i)"].empty? || !item["attendance_time(5i)"].empty?
+        attendance.update_column(:edited_work_start, Time.zone.local(attendance.day.year, attendance.day.month, attendance.day.day, item["attendance_time(4i)"].to_i, item["attendance_time(5i)"].to_i))
       end
       # 退勤があれば更新
-      if !item["work_end(4i)"].empty? || !item["work_end(5i)"].empty?
-        attendance.update_column(:edited_work_end, Time.zone.local(attendance.day.year, attendance.day.month, attendance.day.day, item["work_end(4i)"].to_i, item["work_end(5i)"].to_i))
+      if !item["leaving_time(4i)"].empty? || !item["leaving_time(5i)"].empty?
+        attendance.update_column(:edited_work_end, Time.zone.local(attendance.day.year, attendance.day.month, attendance.day.day, item["leaving_time(4i)"].to_i, item["leaving_time(5i)"].to_i))
       end
       # チェックがあれば翌日の時間で退社扱い
       if !params[:check].nil? && !attendance.edited_work_end.nil?
@@ -212,7 +181,6 @@ class AttendancesController < ApplicationController
         end
       end
     end
-    
     redirect_to user_url(@user, params: { id: @user.id, first_day: params[:first_day] })
   end
   
