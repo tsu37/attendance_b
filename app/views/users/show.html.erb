@@ -251,12 +251,10 @@
         </tr>
         <% end %>
         <tr>
-          <td class="table-body"></td>
-          <td colspan="2" class="table-body"></td>
-          <td colspan="6" class="table-body"></td>
-          <td class="table-body"><%= format("%.2f", @work_sum) %></td>
           <td colspan="5" class="table-body"></td>
-          <td class="table-body">所属長承認　
+          <td colspan="5" class="table-body">在社時間:<%= format("%.2f", @work_sum) %></td>
+          <td colspan="5" class="table-body"></td>
+          <td colspan="2" class="table-body">所属長承認　
             <% if @one_month_attendance.blank? || @one_month_attendance.authorizer_user_id.blank? %>
               未
             <% elsif @one_month_attendance.applying? %>

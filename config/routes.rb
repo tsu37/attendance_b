@@ -7,11 +7,11 @@ Rails.application.routes.draw do
   delete '/logout',  to: 'sessions#destroy'
   
   get '/attendance_edit', to: 'attendances#edit', as: 'edit_attendance'
-  post '/attendance', to: 'attendances#update_all', as: 'update_all_attendance'
-  post '/attendance', to: 'attendances#attendance_update', as: 'attendance'
-  post '/leaving', to: 'attendances#leaving_update', as: 'leaving'
+  post '/attendance_update', to: 'attendances#update_all', as: 'update_all_attendance'
+  post '/attendance', to: 'attendances#attendance', as: 'attendance'
+  post '/leaving', to: 'attendances#leaving', as: 'leaving'
   # patch '/attendance', to: 'attendances_#update_attendance', as: 'update_attendance'
-  post '/attendance/applied', to: 'attendance#update_applied_attendance', as: 'update_applied_attendance'
+  post '/attendance/applied', to: 'attendances#update_applied_attendance', as: 'update_applied_attendance'
 
   # 残業申請関係
   get '/attendance/overtime', to: 'attendances#edit_overtime', as: 'edit_overtime_attendance'

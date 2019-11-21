@@ -3,7 +3,7 @@ class AttendancesController < ApplicationController
   before_action :admin_or_correct_user,   only: [:edit]  
   
   # 出勤・退社ボタン押下
-  def attendance_update
+  def attendance
     # 更新する勤怠データを取得
     @attendance = Attendance.find(params[:attendance][:id])
     # 更新パラメータを文字列で取得する
@@ -22,7 +22,7 @@ class AttendancesController < ApplicationController
     redirect_to @user
   end
   
-  def leaving_update
+  def leaving
     # 更新する勤怠データを取得
     @attendance = Attendance.find(params[:attendance][:id])
     # 更新パラメータを文字列で取得する

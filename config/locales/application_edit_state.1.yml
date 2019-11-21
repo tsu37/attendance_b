@@ -1,7 +1,7 @@
 ja:
-  application_status:
+  application_edit_states:
     article:
-      nothing: 'なし'
-      applying: '申請中'
-      approval: '承認'
-      denial: '否認'
+      nothing0: 'なし'
+      applying1: '申請中'
+      approval2: '承認'
+      denial3: '否認'

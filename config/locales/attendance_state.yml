@@ -1,0 +1,7 @@
+ja:
+  application_status:
+    article:
+      nothing: 'なし'
+      applying: '申請中'
+      approval: '承認'
+      denial: '否認'
