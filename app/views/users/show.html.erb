@@ -86,6 +86,15 @@
       <!-- users_controller.rbの@attendancesの中身を見にいく-->
       <% total_present_time = 0 %>
       <% @attendances.each do |attendance| %>
+      <% 
+        # css_class = 
+        # case @day_of_week = %w[日 月 火 水 木 金 土][attendance.day.wday]
+        # when @day_of_week === '土'
+        #   "text-primary"
+        # when @day_of_week === '日'
+        #   "text-danger"
+        # end
+      %>
         <tr>
           <!-- 残業申請 -->
           <td class="table-body">
@@ -94,6 +103,7 @@
               data-date="<%= attendance.day.month %>/<%= attendance.day.day %>"
               data-hidden_date="<%= attendance.day.month %>/<%= attendance.day.day %>"
               data-day_of_week="<%= @day_of_week[attendance.day.wday] %>"
+
             >
               残業申請
             </button>
@@ -140,6 +150,7 @@
                         </td>
                         <!-- 業務処理内容の表示  -->
                         <td class="table-body modal-business-processing">
+                          <%= f.text_field  :remarks, class: 'form-control'%>
                           <%= attendance.business_processing if !attendance.business_processing.nil? %>
                         </td>
                         <!-- 指示者確認印の表示  -->

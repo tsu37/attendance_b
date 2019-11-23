@@ -20,7 +20,7 @@ Rails.application.routes.draw do
   
   # 1ヵ月分勤怠の確認申請関係
   post '/users/onemonth', to: 'users#onemonth_application', as: 'onemonth_application'
-  post '/attendance/update_onemonth', to: 'attendance#update_onemonth_applied_attendance', as: 'update_onemonth_applied_attendance'
+  post '/attendance/update_onemonth', to: 'attendances#update_onemonth_applied_attendance', as: 'update_onemonth_applied_attendance'
   
   get '/basic_info',   to: 'users#edit_basic_info'
   post '/basic_info',   to: 'users#edit_basic_info'

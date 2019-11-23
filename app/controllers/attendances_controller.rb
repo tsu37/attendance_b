@@ -206,10 +206,10 @@ class AttendancesController < ApplicationController
         
         if attendance.approval2?
           # 現在の出勤/退勤時刻を変更前として保持 @note 変更前が空（この日付では初回の変更）なら保存
-          attendance.update_attributes(before_edited_work_start: attendance.work_start) if attendance.before_edited_work_start.blank?
-          attendance.update_attributes(before_edited_work_end: attendance.work_end) if attendance.before_edited_work_end.blank?
+          attendance.update_attributes(before_edited_work_start: attendance.attendance_time) if attendance.before_edited_work_start.blank?
+          attendance.update_attributes(before_edited_work_end: attendance.leaving_time) if attendance.before_edited_work_end.blank?
           # 承認された場合は出勤/退勤時刻を上書きする
-          attendance.update_attributes(work_start: attendance.edited_work_start, work_end: attendance.edited_work_end)
+          attendance.update_attributes(attendance_time: attendance.edited_work_start, leaving_time: attendance.edited_work_end)
         end
       end
     end
@@ -330,7 +330,7 @@ class AttendancesController < ApplicationController
   
   # 申請された1ヵ月分の勤怠を更新する（承認/否認など）
   def update_onemonth_applied_attendance
-    
+    byebug
     # 変更チェックが1つ以上で勤怠変更情報を更新
     if !params[:check].blank?
       params[:application].each do |id, item|

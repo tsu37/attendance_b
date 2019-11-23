@@ -34,7 +34,7 @@
       <tbody>
         <% attendances.each do |attendance| %>
             <td class="table-body"><%= attendance.day.month %>/<%= attendance.day.day %></td>
-            <td class="table-body"><%= @youbi[attendance.day.wday] %></td>
+            <td class="table-body"><%= @day_of_week[attendance.day.wday] %></td>
             <!-- 変更前の表示 -->
             <!-- 出社 -->
             <!-- 時 -->
@@ -79,7 +79,7 @@
             </td>
 
             <td class="table-body">
-              <%= attendance.rmarks if !attendance.blank?%>
+              <%= attendance.remarks if !attendance.blank?%>
             </td>
 
             <!-- 指示者確認㊞の表示  -->
