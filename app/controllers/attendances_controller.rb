@@ -182,6 +182,7 @@ class AttendancesController < ApplicationController
       end
     end
     redirect_to user_url(@user, params: { id: @user.id, first_day: params[:first_day] })
+    flash[:success] = "勤怠情報を更新しました。"
   end
   
   # 申請された勤怠編集を更新する（承認や否認する）
@@ -215,37 +216,6 @@ class AttendancesController < ApplicationController
     end
     
     @user = User.find(params[:id])
-    redirect_to user_url(@user, params: { id: @user.id, first_day: params[:first_day] })
-  end
-  
-    # 勤怠編集を申請する
-  def edit_application
-    @user = User.find(params[:id])
-    
-    # 各残業申請情報を更新
-    params[:attendance].each do |id, item|
-      attendance = Attendance.find(id)
-      # 申請者が入力されていたら『申請中』に変更する
-      if !item[:authorizer_user_id].blank?
-        attendance.applying1!
-        # 申請者の番号も保持
-        @user.update_attributes(applied_last_time_user_id: item[:authorizer_user_id])
-      else
-        # 空なら上書きで空とならないよう既存のものをセット
-        item[:authorizer_user_id] = attendance.authorizer_user_id
-      end
-      attendance.update_attributes(item.permit(:remarks, :authorizer_user_id, :application_edit_state))
-      
-      # 終了予定時間があれば更新
-      if !item["edited_work_start(4i)"].blank? || !item["edited_work_start(5i)"].blank?
-        attendance.update_column(:edited_work_start, Time.zone.local(attendance.day.year, attendance.day.month, attendance.day.day, item["edited_work_start(4i)"].to_i, item["edited_work_start(5i)"].to_i))
-      end
-      # 終了指示時刻があれば更新
-      if !item["edited_work_end(4i)"].blank? || !item["edited_work_end(5i)"].blank?
-        attendance.update_column(:edited_work_end, Time.zone.local(attendance.day.year, attendance.day.month, attendance.day.day, item["edited_work_end(4i)"].to_i, item["edited_work_end(5i)"].to_i))
-      end
-    end
-    
     redirect_to user_url(@user, params: { id: @user.id, first_day: params[:first_day] })
   end
   
@@ -330,7 +300,7 @@ class AttendancesController < ApplicationController
   
   # 申請された1ヵ月分の勤怠を更新する（承認/否認など）
   def update_onemonth_applied_attendance
-    byebug
+    # byebug
     # 変更チェックが1つ以上で勤怠変更情報を更新
     if !params[:check].blank?
       params[:application].each do |id, item|
@@ -363,7 +333,7 @@ class AttendancesController < ApplicationController
     def logged_in_user		
       unless logged_in?		
         store_location		
-        flash[:danger] = "Please log in."		
+        flash[:danger] = "ログインして下さい。"		
         redirect_to login_url		
       end		
     end		

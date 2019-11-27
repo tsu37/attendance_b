@@ -56,8 +56,8 @@ class User < ApplicationRecord
       end
     end
     
-    # # 重複したidがあればメッセージに表示
-          byebug
+    # # 重複したidがあればメッセージに表示(石橋くん確認)
+          # byebug
     if overlap_id.count == 0
       return "アップデートに成功しました。"
     else

@@ -1,6 +1,6 @@
 <% provide(:title, @user.name) %>
 
-<%= form_tag edit_attendance_path, method: :post do %>
+<%= form_tag update_all_attendance_path, method: :post do %>
   <%= hidden_field_tag :id, @user.id %>
   <%= hidden_field_tag :first_day, @first_day %>
   <table class="txt1 table table-bordered table-striped table-condensed table-status">

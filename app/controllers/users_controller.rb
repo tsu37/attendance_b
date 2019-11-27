@@ -302,6 +302,7 @@ class UsersController < ApplicationController
       msg == "登録完了" ? flash[:success] = msg : flash[:danger] = msg
       redirect_to users_url
     end 
+    flash[:success] = "CSVインポートに成功しました。"
   end
 
   private
