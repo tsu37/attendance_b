@@ -61,7 +61,7 @@ class AttendancesController < ApplicationController
     end
     @last_day = @first_day.end_of_month
     
-    # 期間分のデータチェック
+    # 期間分のデータチェ��ク
     (@first_day..@last_day).each do |date|
       # 該当日付のデータがないなら作成する
       if !@user.attendances.any? {|attendance| attendance.day == date }
@@ -182,7 +182,7 @@ class AttendancesController < ApplicationController
       end
     end
     redirect_to user_url(@user, params: { id: @user.id, first_day: params[:first_day] })
-    flash[:success] = "勤怠情報を更新しました。"
+    flash[:success] = "勤怠��報を更新しました。"
   end
   
   # 申請された勤怠編集を更新する（承認や否認する）
@@ -245,7 +245,7 @@ class AttendancesController < ApplicationController
       # 申請者の番号も保持
       @user.update_attributes(applied_last_time_user_id: params[:attendance][:authorizer_user_id])
     else
-      # 空なら上書きで空とならないよう既存のものをセット
+      # 空なら上書きで空とならないよう既存のものをセ��ト
       params[:attendance][:authorizer_user_id] = attendance.authorizer_user_id
     end
     attendance.update_attributes(params.require(:attendance).permit(:business_processing, :authorizer_user_id, :application_state))
