@@ -187,10 +187,12 @@
           </td>
           <!-- 出社時間の表示  -->
           <td class="table-body">
-            <%= attendance.attendance_time.hour if !attendance.attendance_time.nil? %>
-              <% if attendance.day == DateTime.new(DateTime.now.year, DateTime.now.month, DateTime.now.day) && attendance.attendance_time.nil?%>
-                <%= link_to "出社", attendance_path(params: {attendance: {id:attendance.id , attendance_time:DateTime.current}}), :method => :post %>
-              <% end %>
+            <% if current_user == @user %>
+              <%= attendance.attendance_time.hour if !attendance.attendance_time.nil? %>
+                <% if attendance.day == DateTime.new(DateTime.now.year, DateTime.now.month, DateTime.now.day) && attendance.attendance_time.nil?%>
+                  <%= link_to "出社", attendance_path(params: {attendance: {id:attendance.id , attendance_time:DateTime.current}}), :method => :post %>
+                <% end %>
+            <% end %>
           </td>
           <td class="table-body">
             <%= attendance.attendance_time.min if !attendance.attendance_time.nil? %>
@@ -198,10 +200,12 @@
           <td class="table-body"> </td>
           <!-- 退社時間の表示  -->
           <td class="table-body">
-            <%= attendance.leaving_time.hour if !attendance.leaving_time.nil? %>
-              <% if attendance.day == Date.current && attendance.attendance_time.present? && attendance.leaving_time.nil? %>
-                <%= link_to "退社", leaving_path(params: {attendance: {id:attendance.id , leaving_time:DateTime.current}}), :method => :post %>
-              <% end %>
+            <% if current_user == @user %>
+              <%= attendance.leaving_time.hour if !attendance.leaving_time.nil? %>
+                <% if attendance.day == Date.current && attendance.attendance_time.present? && attendance.leaving_time.nil? %>
+                  <%= link_to "退社", leaving_path(params: {attendance: {id:attendance.id , leaving_time:DateTime.current}}), :method => :post %>
+                <% end %>
+            <% end %>
           </td>
           <td class="table-body">
             <%= attendance.leaving_time.min if !attendance.leaving_time.nil? %>

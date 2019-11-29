@@ -182,7 +182,7 @@ class AttendancesController < ApplicationController
       end
     end
     redirect_to user_url(@user, params: { id: @user.id, first_day: params[:first_day] })
-    flash[:success] = "勤怠��報を更新しました。"
+    flash[:success] = "勤務時間を編集し、申請しました。"
   end
   
   # 申請された勤怠編集を更新する（承認や否認する）
