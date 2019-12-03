@@ -36,7 +36,15 @@
                 <%= fields_for("attendance[]", attendance) do |f| %>
                   <tr class="overtime_application">
                     <td class="table-body"><%= attendance.day.month %>/<%= attendance.day.day %></td>
-                    <td class="table-body"><%= @day_of_week[attendance.day.wday] %></td>
+                    <td class="table-body">
+                      <% if @day_of_week[attendance.day.wday] == "日"  %>
+                        <font color="red">日</font>
+                      <% elsif @day_of_week[attendance.day.wday] == "土" %>
+                        <font color="blue">土</font>
+                      <% else %>
+                        <%= @day_of_week[attendance.day.wday] %>
+                      <% end %>
+                    </td>
                     <!-- 終了予定時間の表示  -->
                     <td class="table-body">
                       <%= attendance.scheduled_end_hour.hour if !attendance.scheduled_end_hour.blank? %>: <%= attendance.scheduled_end_hour.min if !attendance.scheduled_end_hour.blank? %>

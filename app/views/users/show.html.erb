@@ -86,15 +86,6 @@
       <!-- users_controller.rbの@attendancesの中身を見にいく-->
       <% total_present_time = 0 %>
       <% @attendances.each do |attendance| %>
-      <% 
-        # css_class = 
-        # case @day_of_week = %w[日 月 火 水 木 金 土][attendance.day.wday]
-        # when @day_of_week === '土'
-        #   "text-primary"
-        # when @day_of_week === '日'
-        #   "text-danger"
-        # end
-      %>
         <tr>
           <!-- 残業申請 -->
           <td class="table-body">
@@ -139,7 +130,13 @@
                           <%= attendance.day.month %>/<%= attendance.day.day %>
                         </td>
                         <td class="table-body modal-dayOfWeek">
-                          <%= @day_of_week[attendance.day.wday] %>
+                          <% if @day_of_week[attendance.day.wday] == "日"  %>
+                            <font color="red">日</font>
+                          <% elsif @day_of_week[attendance.day.wday] == "土" %>
+                            <font color="blue">土</font>
+                          <% else %>
+                            <%= @day_of_week[attendance.day.wday] %>
+                          <% end %>
                         </td>
                         <!-- 終了予定時間の表示  -->
                         <td class="table-body modal-scheduledEndhour">
@@ -183,7 +180,13 @@
           </td>
           <!--曜日-->
           <td class="table-body">
-            <%= @day_of_week[attendance.day.wday] %>
+            <% if @day_of_week[attendance.day.wday] == "日"  %>
+              <font color="red">日</font>
+            <% elsif @day_of_week[attendance.day.wday] == "土" %>
+              <font color="blue">土</font>
+            <% else %>
+              <%= @day_of_week[attendance.day.wday] %>
+            <% end %>
           </td>
           <!-- 出社時間の表示  -->
           <td class="table-body">

@@ -59,7 +59,7 @@ class UsersController < ApplicationController
     @new_one_month_attendance = OneMonthAttendance.new(application_user_id: @user.id)	
     # 自分に申請中の勤怠編集一覧を取得	
     @edit_applications_to_me = Attendance.where(authorizer_user_id_of_attendance: @user.id, application_edit_state: :applying1)	
-    # 存在しないuserは除外	
+    # 存在しないuserは除外
     @edit_applications_to_me = @edit_applications_to_me.select{ |x| !User.find_by(id: x.user_id).nil? }	
     # 名前ごとに分類	
     @edit_applications = @edit_applications_to_me.group_by do |application|	
@@ -286,7 +286,7 @@ class UsersController < ApplicationController
     @one_month_attendance.applying!
     # 申請者の番号も保持
     @user.update_attributes(applied_last_time_user_id: @one_month_attendance.authorizer_user_id)
-    flash[:success] = "所属長承認申請しました"
+    flash[:success] = "時間管理表を送信しました。"
     redirect_to user_url(@user, params: { id: @user.id, first_day: params[:one_month_attendance][:first_day] })
   end
    
@@ -295,7 +295,7 @@ class UsersController < ApplicationController
       flash[:danger] = "読み込むCSVを選択してください。"
       redirect_to users_url
     elsif File.extname(params[:csv_file].original_filename) != ".csv"
-      flash[:danger] = "csvファイルのみ読み込み可能です。"
+      flash[:danger] = "CSVファイルのみ読み込み可能です。"
       redirect_to users_url
     else
       msg = User.import(params[:csv_file])

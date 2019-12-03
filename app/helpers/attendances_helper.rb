@@ -1,6 +1,5 @@
 module AttendancesHelper
   def attendances_check  # 勤怠一括編集アクション内の入力チェック
-    # byebug
     error_count = 0
     params[:attendances].each do |id, item|
       attendance = Attendance.find(id)

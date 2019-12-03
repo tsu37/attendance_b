@@ -47,6 +47,7 @@ class AttendancesController < ApplicationController
     @user = User.find(params[:id])
     # 曜日表示用に使用する
     @day_of_week = %w[日 月 火 水 木 金 土]
+    
     # 上長ユーザを全取得
     ids = [@user.applied_last_time_user_id]
     User.where.not(id: @user.id, superior: false).each {|s| ids.push(s.id) if s.id != @user.applied_last_time_user_id }
@@ -129,7 +130,6 @@ class AttendancesController < ApplicationController
   end
   
   def update_all
-    # debugger
     @user = User.find(params[:id])
     # 各勤怠情報を更新
     params[:attendance].each do |id, item|
@@ -144,7 +144,7 @@ class AttendancesController < ApplicationController
       # 在社時間ーでエラー表示
       if (item["attendance_time(4i)"]+item["attendance_time(5i)"]).to_i > (item["leaving_time(4i)"]+item["leaving_time(5i)"]).to_i
         if params[:check].nil?
-          flash[:danger] = '在社時間がーになっています'
+          flash[:danger] = '在社時間がマイナスになっています。'
           redirect_back(fallback_location: root_path) and return
         else
           # 申請者が入力されていたら『申請中』に変更する
@@ -169,6 +169,7 @@ class AttendancesController < ApplicationController
   
       if !item["attendance_time(4i)"].empty? || !item["attendance_time(5i)"].empty?
         attendance.update_column(:edited_work_start, Time.zone.local(attendance.day.year, attendance.day.month, attendance.day.day, item["attendance_time(4i)"].to_i, item["attendance_time(5i)"].to_i))
+        
       end
       # 退勤があれば更新
       if !item["leaving_time(4i)"].empty? || !item["leaving_time(5i)"].empty?
@@ -221,7 +222,6 @@ class AttendancesController < ApplicationController
   
   # 1日分の残業を申請する
   def one_overtime_application
-    # byebug
     @user = User.find(params[:attendance][:user_id])
     
     # 終了予定時刻が空なら何もしない
@@ -300,7 +300,6 @@ class AttendancesController < ApplicationController
   
   # 申請された1ヵ月分の勤怠を更新する（承認/否認など）
   def update_onemonth_applied_attendance
-    # byebug
     # 変更チェックが1つ以上で勤怠変更情報を更新
     if !params[:check].blank?
       params[:application].each do |id, item|
@@ -326,7 +325,8 @@ class AttendancesController < ApplicationController
     def user_params		
       params.require(:user).permit(:name, :email, :affiliation,		
                                     :password, :password_confirmation)		
-    end		
+    end
+    
     		
     # beforeアクション		
     # ログイン済みユーザーかどうか確認		
