@@ -56,14 +56,14 @@ class User < ApplicationRecord
       end
     end
     
-    # # 重複したidがあればメッセージに表示(石橋くん確認)
+    # 重複したidがあればメッセージに表示
     if overlap_id.count == 0
-      return "アップデートに成功しました。"
+      return "CSVインポートに成功しました。"
     else
       message = "id:"
       overlap_id.each do |id|
         message += "#{id},"
-      end
+    end
       message += "は重複のため登録できませんでした。"
       return message
     end

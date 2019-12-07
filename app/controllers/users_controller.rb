@@ -212,7 +212,7 @@ class UsersController < ApplicationController
       render 'edit'
     end
   end
-  
+  # 
   def destroy
     User.find(params[:id]).destroy
     flash[:success] = "ユーザーを削除しました。"
@@ -299,10 +299,9 @@ class UsersController < ApplicationController
       redirect_to users_url
     else
       msg = User.import(params[:csv_file])
-      msg == "登録完了" ? flash[:success] = msg : flash[:danger] = msg
+      msg == "CSVインポートに成功しました。" ? flash[:success] = msg : flash[:danger] = msg
       redirect_to users_url
-    end 
-    flash[:success] = "CSVインポートに成功しました。"
+    end
   end
 
   private
