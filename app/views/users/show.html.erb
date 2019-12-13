@@ -190,10 +190,10 @@
           </td>
           <!-- 出社時間の表示  -->
           <td class="table-body">
-              <%= attendance.attendance_time.hour if !attendance.attendance_time.nil? %>
+            <%= attendance.attendance_time.hour if !attendance.attendance_time.nil? %>
           </td>
           <td class="table-body">
-              <%= attendance.attendance_time.min if !attendance.attendance_time.nil? %>
+            <%= attendance.attendance_time.min if !attendance.attendance_time.nil? %>
           </td>
           <td class="table-body">
             <% if current_user == @user %>
@@ -204,10 +204,10 @@
           </td>
           <!-- 退社時間の表示  -->
           <td class="table-body">
-              <%= attendance.leaving_time.hour if !attendance.leaving_time.nil? %>
+            <%= attendance.leaving_time.hour if !attendance.leaving_time.nil? %>
           </td>
           <td class="table-body">
-              <%= attendance.leaving_time.min if !attendance.leaving_time.nil? %>
+            <%= attendance.leaving_time.min if !attendance.leaving_time.nil? %>
           </td>
           <td class="table-body">
             <% if current_user == @user %>

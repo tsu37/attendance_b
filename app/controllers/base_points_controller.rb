@@ -25,27 +25,27 @@ class BasePointsController < ApplicationController
   def create
     @base_point = BasePoint.new(base_point_params)
     if @base_point.save
-      flash[:success] = "拠点登録完了しました"
+      flash[:success] = "拠点登録完了しました。"
     else
-      flash[:error] = "拠点登録に失敗しました"
+      flash[:error] = "拠点登録に失敗しました。"
     end
     redirect_to base_points_path
   end
 
   def update
     if @base_point.update(base_point_params)
-      flash[:success] = "拠点の変更完了しました"
+      flash[:success] = "拠点の変更完了しました。"
     else
-      flash[:error] = "拠点の変更に失敗しました"
+      flash[:error] = "拠点の変更に失敗しました。"
     end
     redirect_to base_points_path
   end
 
   def destroy
     if @base_point.destroy
-      flash[:success] = "拠点の削除完了しました"
+      flash[:success] = "拠点の削除完了しました。"
     else
-      flash[:error] = "拠点の削除に失敗しました"
+      flash[:error] = "拠点の削除に失敗しました。"
     end
     redirect_to base_points_path
   end

@@ -5,3 +5,10 @@ ja:
       applying: '申請中'
       approval: '承認'
       denial: '否認'
+
+ja:
+  attendance_status:
+    article:
+      nothing: 'なし'
+      attendance_time: '出勤'
+      leaving_time: '退勤'

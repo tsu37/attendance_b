@@ -26,9 +26,9 @@
         <td class="table-header"><%= base_point.id %></td>
         <td class="table-header"><%= base_point.name %></td>
         <td class="table-header">
-          <% if base_point.work_start? %>
+          <% if base_point.attendance_time? %>
             出勤
-          <% elsif base_point.work_end? %>
+          <% elsif base_point.leaving_time? %>
             退勤
           <% else %>
           <% end %>
