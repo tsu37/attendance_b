@@ -101,7 +101,6 @@
               <!-- 備考の表示  -->
               <td class="table-body">
                 <% if attendance.day > Date.today %>
-                  
                 <% else %>
                   <%= f.text_field  :remarks, class: 'form-control'%>
                 <% end %>
@@ -110,7 +109,6 @@
               <!-- 残業指示の表示  -->
               <td class="table-body">
                 <% if attendance.day > Date.today %>
-                  
                 <% else %>
                   <% if !attendance.authorizer_user_id_of_attendance.blank? && !User.find_by(id: attendance.authorizer_user_id_of_attendance).blank? %>
                     <% if attendance.applying1? %>

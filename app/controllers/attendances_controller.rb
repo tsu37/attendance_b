@@ -135,12 +135,12 @@ class AttendancesController < ApplicationController
     params[:attendance].each do |id, item|
       # 申請者がない行はカット
       if item["authorizer_user_id_of_attendance"].blank?
-        next
+        flash[:danger] = '指示者確認㊞が空になっています。'
+        redirect_back(fallback_location: root_path) and return
       end
       attendance = Attendance.find(id)
       attendance.update_attributes(item.permit(:remarks, :overtime_work, :instructor, :authorizer_user_id_of_attendance))
       # 初期値を変更前のカラムにするためparamsにはattendance_time/leaving_timeで渡す
-      # 格納先はedited_work_start/end
       # 在社時間ーでエラー表示
       if (item["attendance_time(4i)"]+item["attendance_time(5i)"]).to_i > (item["leaving_time(4i)"]+item["leaving_time(5i)"]).to_i
         if params[:check].nil?
@@ -326,7 +326,6 @@ class AttendancesController < ApplicationController
       params.require(:user).permit(:name, :email, :affiliation,		
                                     :password, :password_confirmation)		
     end
-    
     		
     # beforeアクション		
     # ログイン済みユーザーかどうか確認		
