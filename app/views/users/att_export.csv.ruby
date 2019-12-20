@@ -48,8 +48,8 @@ csv_str = CSV.generate do |csv|
   csv << [""]
   # 基本時間の合計
   basic_work_sum = 0
-  if !@user.basic_work_hour.blank? && !@attendance_days.blank?
-    basic_work_sum = format("%.2f", @attendance_days*(((@user.basic_work_hour.hour*60.0) + @user.basic_work_hour.min)/60))
+  if !@user.basic_work_time.blank? && !@attendance_days.blank?
+    basic_work_sum = format("%.2f", @attendance_days*(((@user.basic_work_time.hour*60.0) + @user.basic_work_time.min)/60))
   else
     basic_work_sum = "エラー"
   end

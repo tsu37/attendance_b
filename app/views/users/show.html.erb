@@ -11,10 +11,10 @@
               style:"color:black", class: 'btn' if current_user == @user %>
           </th>
           <th class="table-header"> 指定勤務時間:
-            <%= format("%.2f", ((@user.design_work_hour.hour*60.0) + @user.design_work_hour.min)/60) if !@user.nil? && !@user.design_work_hour.nil? %>
+            <%= format("%.2f", ((@user.design_work_time.hour*60.0) + @user.design_work_time.min)/60) if !@user.nil? && !@user.design_work_time.nil? %>
           </th>
           <th colspan="3" class="table-header"> 基本時間:
-            <%= format("%.2f", ((@user.basic_work_hour.hour*60.0) + @user.basic_work_hour.min)/60) if !@user.nil? && !@user.basic_work_hour.nil? %>
+            <%= format("%.2f", ((@user.basic_work_time.hour*60.0) + @user.basic_work_time.min)/60) if !@user.nil? && !@user.basic_work_time.nil? %>
           </th>
           </th>
           <th class="table-header">初日:
@@ -140,7 +140,7 @@
                         </td>
                         <!-- 終了予定時間の表示  -->
                         <td class="table-body modal-scheduledEndhour">
-                          <%= f.datetime_select :scheduled_end_hour, {discard_year: true, discard_month: true, discard_day: true, include_blank: true}, {class: "form-control bootstrap-date-only-width scheduled_end_hour"} %>
+                          <%= f.datetime_select :scheduled_end_time, {discard_year: true, discard_month: true, discard_day: true, include_blank: true}, {class: "form-control bootstrap-date-only-width scheduled_end_time"} %>
                         </td>
                         <!-- 翌日のチェックボックスの表示  -->
                         <td class="table-body modal-next-day">
@@ -232,19 +232,19 @@
           </td>
           <!-- 終了予定時間(時)の表示  -->
           <td class="table-body">
-            <%= attendance.scheduled_end_hour.hour if !attendance.scheduled_end_hour.nil? %>
+            <%= attendance.scheduled_end_time.hour if !attendance.scheduled_end_time.nil? %>
           </td>
           <!-- 終了予定時間(分)の表示  -->
           <td class="table-body">
-            <%= attendance.scheduled_end_hour.min if !attendance.scheduled_end_hour.nil? %>
+            <%= attendance.scheduled_end_time.min if !attendance.scheduled_end_time.nil? %>
           </td>
           <td class="table-body">
           </td>
           <!-- 時間外の表示  -->
           <td class="table-body">
-            <% if !@user.designated_work_end_hour.blank? && !attendance.scheduled_end_hour.blank? %>
-              <% if (Time.new(attendance.scheduled_end_hour.year, attendance.scheduled_end_hour.month, attendance.scheduled_end_hour.day, attendance.scheduled_end_hour.hour, attendance.scheduled_end_hour.min) - Time.new(attendance.day.year, attendance.day.month, attendance.day.day, @user.designated_work_end_hour.hour, @user.designated_work_end_hour.min)) > 0 %>
-                <%= format("%.2f", (Time.new(attendance.scheduled_end_hour.year, attendance.scheduled_end_hour.month, attendance.scheduled_end_hour.day, attendance.scheduled_end_hour.hour, attendance.scheduled_end_hour.min) - Time.new(attendance.day.year, attendance.day.month, attendance.day.day, @user.designated_work_end_hour.hour, @user.designated_work_end_hour.min))/3600) %>
+            <% if !@user.designated_work_end_time.blank? && !attendance.scheduled_end_time.blank? %>
+              <% if (Time.new(attendance.scheduled_end_time.year, attendance.scheduled_end_time.month, attendance.scheduled_end_time.day, attendance.scheduled_end_time.hour, attendance.scheduled_end_time.min) - Time.new(attendance.day.year, attendance.day.month, attendance.day.day, @user.designated_work_end_time.hour, @user.designated_work_end_time.min)) > 0 %>
+                <%= format("%.2f", (Time.new(attendance.scheduled_end_time.year, attendance.scheduled_end_time.month, attendance.scheduled_end_time.day, attendance.scheduled_end_time.hour, attendance.scheduled_end_time.min) - Time.new(attendance.day.year, attendance.day.month, attendance.day.day, @user.designated_work_end_time.hour, @user.designated_work_end_time.min))/3600) %>
               <% end %>
             <% end %>
           </td>

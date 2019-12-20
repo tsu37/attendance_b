@@ -31,7 +31,7 @@ ActiveRecord::Schema.define(version: 20191111132248) do
     t.text "overtime_work"
     t.integer "authorizer_user_id_of_attendances"
     t.datetime "before_edited_work_start"
-    t.datetime "scheduled_end_hour"
+    t.datetime "scheduled_end_time"
     t.datetime "edited_work_start"
     t.datetime "edited_work_end"
     t.datetime "before_edited_work_end"
@@ -46,7 +46,7 @@ ActiveRecord::Schema.define(version: 20191111132248) do
   end
 
   create_table "basic_infos", force: :cascade do |t|
-    t.datetime "basic_work_hour"
+    t.datetime "basic_work_time"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -74,12 +74,12 @@ ActiveRecord::Schema.define(version: 20191111132248) do
     t.string "reset_digest"
     t.datetime "reset_sent_at"
     t.string "affiliation"
-    t.time "design_work_hour"
-    t.time "basic_work_hour"
+    t.time "design_work_time"
+    t.time "basic_work_time"
     t.integer "user_id"
     t.string "uid"
-    t.time "designated_work_start_hour"
-    t.time "designated_work_end_hour"
+    t.time "designated_work_end_time"
+    t.time "designated_work_start_time"
     t.boolean "superior", default: false
     t.integer "applied_last_time_user_id"
     t.index ["email"], name: "index_users_on_email", unique: true

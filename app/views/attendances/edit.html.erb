@@ -8,9 +8,9 @@
      <div class = "header">  
         <tr>
           <th colspan="2" class="table-header">
-            指定勤務時間:<%= format("%.2f", ((@user.design_work_hour.hour*60.0) + @user.design_work_hour.min)/60) if !@user.nil? && !@user.design_work_hour.nil? %></th>
+            指定勤務時間:<%= format("%.2f", ((@user.design_work_time.hour*60.0) + @user.design_work_time.min)/60) if !@user.nil? && !@user.design_work_time.nil? %></th>
           <th colspan="3" class="table-header">
-            基本時間:<%= format("%.2f", ((@user.basic_work_hour.hour*60.0) + @user.basic_work_hour.min)/60) if !@user.nil? && !@user.basic_work_hour.nil? %></th>
+            基本時間:<%= format("%.2f", ((@user.basic_work_time.hour*60.0) + @user.basic_work_time.min)/60) if !@user.nil? && !@user.basic_work_time.nil? %></th>
           </th>
           <th class="table-header">初日: <%= @first_day %></th>
         </tr>
@@ -95,6 +95,9 @@
               <td class="table-body">
                 <% if !attendance.attendance_time.nil? && !attendance.leaving_time.nil? %>
                   <%= format("%.2f", (attendance.leaving_time - attendance.attendance_time)/3600) %>
+                <!--勤怠編集後の在社時間を表示-->
+                <% elsif !attendance.edited_work_start.nil? && !attendance.edited_work_end.nil? %>
+                  <%= format("%.2f", (attendance.edited_work_end - attendance.edited_work_start)/3600) %>
                 <% end %>                
               </td>
               
@@ -120,8 +123,8 @@
                     <% else %>
                     <% end %>
                   <% end %>
-                <%= f.collection_select :authorizer_user_id_of_attendance, @superior_users, :id, :name, {:include_blank => true, :selected => 0}, {:class => "form-control authorizer_user_id_of_attendance"} %>
-              <% end %>
+                  <%= f.collection_select :authorizer_user_id_of_attendance, @superior_users, :id, :name, {:include_blank => true, :selected => 0}, {:class => "form-control authorizer_user_id_of_attendance"} %>
+                <% end %>
               </td>
             </tr>
           <% end %>
@@ -133,4 +136,3 @@
     <%= submit_tag "編集を保存する", style:"width:200px", class: "btn btn-lg btn-primary" %>
   </div>
 <% end %>
-

@@ -133,11 +133,15 @@ class AttendancesController < ApplicationController
     @user = User.find(params[:id])
     # 各勤怠情報を更新
     params[:attendance].each do |id, item|
-      # 申請者がない行はカット
+      # # 申請者がない行はカット
+      # # byebug
       if item["authorizer_user_id_of_attendance"].blank?
-        flash[:danger] = '指示者確認㊞が空になっています。'
-        redirect_back(fallback_location: root_path) and return
+        # next
+        flash[:danger] = '指示者確認㊞が空欄です。'
+        next
+      #   # redirect_back(fallback_location: root_path) and return
       end
+      # byebug
       attendance = Attendance.find(id)
       attendance.update_attributes(item.permit(:remarks, :overtime_work, :instructor, :authorizer_user_id_of_attendance))
       # 初期値を変更前のカラムにするためparamsにはattendance_time/leaving_timeで渡す
@@ -166,10 +170,9 @@ class AttendancesController < ApplicationController
           @user.update_attributes(applied_last_time_user_id: item[:authorizer_user_id_of_attendance])
         end
       end
-  
+      # 出勤があれば更新  
       if !item["attendance_time(4i)"].empty? || !item["attendance_time(5i)"].empty?
         attendance.update_column(:edited_work_start, Time.zone.local(attendance.day.year, attendance.day.month, attendance.day.day, item["attendance_time(4i)"].to_i, item["attendance_time(5i)"].to_i))
-        
       end
       # 退勤があれば更新
       if !item["leaving_time(4i)"].empty? || !item["leaving_time(5i)"].empty?
@@ -181,7 +184,10 @@ class AttendancesController < ApplicationController
           attendance.update_column(:edited_work_end, attendance.edited_work_end+1.day)
         end
       end
+    # redirect_to user_url(@user, params: { id: @user.id, first_day: params[:first_day] })
+    # flash[:success] = "勤務時間を編集し、申請しました。"
     end
+    
     redirect_to user_url(@user, params: { id: @user.id, first_day: params[:first_day] })
     flash[:success] = "勤務時間を編集し、申請しました。"
   end
@@ -225,7 +231,7 @@ class AttendancesController < ApplicationController
     @user = User.find(params[:attendance][:user_id])
     
     # 終了予定時刻が空なら何もしない
-    if params[:attendance]["scheduled_end_hour(4i)"].blank? || params[:attendance]["scheduled_end_hour(5i)"].blank?
+    if params[:attendance]["scheduled_end_time(4i)"].blank? || params[:attendance]["scheduled_end_time(5i)"].blank?
       flash[:danger] = "残業申請の終了予定時刻が空です"
       redirect_to user_url(@user, params: { id: @user.id, first_day: params[:attendance][:first_day] })
       return
@@ -251,13 +257,13 @@ class AttendancesController < ApplicationController
     attendance.update_attributes(params.require(:attendance).permit(:business_processing, :authorizer_user_id, :application_state))
     
     # 終了予定時間があれば更新
-    if !params[:attendance]["scheduled_end_hour(4i)"].blank? || !params[:attendance]["scheduled_end_hour(5i)"].blank?
-      attendance.update_column(:scheduled_end_hour, Time.zone.local(attendance.day.year, attendance.day.month, attendance.day.day, params[:attendance]["scheduled_end_hour(4i)"].to_i, params[:attendance]["scheduled_end_hour(5i)"].to_i))
+    if !params[:attendance]["scheduled_end_time(4i)"].blank? || !params[:attendance]["scheduled_end_time(5i)"].blank?
+      attendance.update_column(:scheduled_end_time, Time.zone.local(attendance.day.year, attendance.day.month, attendance.day.day, params[:attendance]["scheduled_end_time(4i)"].to_i, params[:attendance]["scheduled_end_time(5i)"].to_i))
     end
     
     # 翌日チェックONなら終了予定時間を＋1日する
     if !params[:check].blank?
-      attendance.update_column(:scheduled_end_hour, attendance.scheduled_end_hour+1.day)
+      attendance.update_column(:scheduled_end_time, attendance.scheduled_end_time+1.day)
     end
     
     flash[:success] = "残業申請完了しました"
@@ -289,8 +295,8 @@ class AttendancesController < ApplicationController
         attendance.update_attributes(item.permit(:business_processing, :authorizer_user_id, :application_state))
         
         # 終了予定時間があれば更新
-        if !item["scheduled_end_hour(4i)"].blank? || !item["scheduled_end_hour(5i)"].blank?
-          attendance.update_column(:scheduled_end_hour, Time.zone.local(attendance.day.year, attendance.day.month, attendance.day.day, item["scheduled_end_hour(4i)"].to_i, item["scheduled_end_hour(5i)"].to_i))
+        if !item["scheduled_end_time(4i)"].blank? || !item["scheduled_end_time(5i)"].blank?
+          attendance.update_column(:scheduled_end_time, Time.zone.local(attendance.day.year, attendance.day.month, attendance.day.day, item["scheduled_end_time(4i)"].to_i, item["scheduled_end_time(5i)"].to_i))
         end
       end
     end
