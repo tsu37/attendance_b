@@ -210,10 +210,8 @@
             <%= attendance.leaving_time.min if !attendance.leaving_time.nil? %>
           </td>
           <td class="table-body">
-            <% if current_user == @user %>
-              <% if attendance.day == Date.current && attendance.attendance_time.present? && attendance.leaving_time.nil? %>
-                <%= link_to "退社", leaving_path(params: {attendance: {id:attendance.id , leaving_time:DateTime.current}}), :method => :post %>
-              <% end %>
+            <% if current_user == @user && !attendance.attendance_time.nil? && attendance.leaving_time.nil? && attendance.day == Date.today %>
+              <%= link_to "退社", leaving_path(params: {attendance: {id:attendance.id , leaving_time:DateTime.current}}), :method => :post %>
             <% end %>
           </td>
           <!-- 在社時間の表示  -->
