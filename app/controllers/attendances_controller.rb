@@ -136,10 +136,10 @@ class AttendancesController < ApplicationController
       # # 申請者がない行はカット
       # # byebug
       if item["authorizer_user_id_of_attendance"].blank?
-        # next
+        next
         # flash[:danger] = '指示者確認㊞が空欄です。'
         # next
-        redirect_back(fallback_location: root_path) and return
+        # redirect_back(fallback_location: root_path) and return
       end
       # byebug
       attendance = Attendance.find(id)
