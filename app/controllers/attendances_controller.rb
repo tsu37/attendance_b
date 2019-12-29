@@ -17,7 +17,8 @@ class AttendancesController < ApplicationController
     end
     #出社・退社押下した日付及び現在のuser idを@userに返す
     @user = @attendance.user
-    attendance_time = Time.new(Time.now.year,Time.now.month,Time.now.day,Time.new.hour,Time.now.min,00)
+    # attendance_time = Time.new(Time.now.year,Time.now.month,Time.now.day,Time.new.hour,Time.now.min,00)
+    attendance_time = Time.current
     @attendance.update(attendance_time: attendance_time)
     redirect_to @user
   end
@@ -35,7 +36,8 @@ class AttendancesController < ApplicationController
     end
     #出社・退社押下した日付及び現在のuser idを@userに返す
     @user = @attendance.user
-    leaving_time = Time.new(Time.now.year,Time.now.month,Time.now.day,Time.new.hour,Time.now.min,00)
+    # leaving_time = Time.new(Time.now.year,Time.now.month,Time.now.day,Time.new.hour,Time.now.min,00)
+    leaving_time = Time.current
     @attendance.update(leaving_time: leaving_time)
     redirect_to @user
   end
