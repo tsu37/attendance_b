@@ -31,7 +31,6 @@ class UsersController < ApplicationController
     (@first_day..@last_day).each do |date|
       # 該当日付のデータがないなら作成する
       #(例)user1に対して、今月の初日から最終日の値を取得する
-      
       if !@user.attendances.any? {|attendance| attendance.day == date }
         linked_attendance = Attendance.create(user_id: @user.id, day: date)
         linked_attendance.save

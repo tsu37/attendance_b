@@ -12,6 +12,7 @@ class AttendancesController < ApplicationController
     if @attendance_time == params[:attendance][:attendance_time]
       # 出社時刻を更新
       if !@attendance.update_column(:attendance_time, DateTime.now)
+      # if !@attendance.update_column(:attendance_time, Time.current)
         flash[:error] = "出社時間の入力に失敗しました"
       end
     end
@@ -30,7 +31,8 @@ class AttendancesController < ApplicationController
     @leaving_time = params[:attendance][:leaving_time]
     if @leaving_time == params[:attendance][:leaving_time]
       # 退社時刻を更新
-      if !@attendance.update_column(:leaving_time, DateTime.now)
+      # if !@attendance.update_column(:leaving_time, DateTime.now)
+      if !@attendance.update_column(:leaving_time, Time.current)
         flash[:error] = "退社時間の入力に失敗しました"
       end
     end
@@ -64,7 +66,7 @@ class AttendancesController < ApplicationController
     end
     @last_day = @first_day.end_of_month
     
-    # 期間分のデータチェ��ク
+    # 期間分のデータチェック
     (@first_day..@last_day).each do |date|
       # 該当日付のデータがないなら作成する
       if !@user.attendances.any? {|attendance| attendance.day == date }
@@ -135,15 +137,13 @@ class AttendancesController < ApplicationController
     @user = User.find(params[:id])
     # 各勤怠情報を更新
     params[:attendance].each do |id, item|
-      # # 申請者がない行はカット
-      # # byebug
+      # 申請者がない行はカット
       if item["authorizer_user_id_of_attendance"].blank?
         next
         # flash[:danger] = '指示者確認㊞が空欄です。'
         # next
         # redirect_back(fallback_location: root_path) and return
       end
-      # byebug
       attendance = Attendance.find(id)
       attendance.update_attributes(item.permit(:remarks, :overtime_work, :instructor, :authorizer_user_id_of_attendance))
       # 初期値を変更前のカラムにするためparamsにはattendance_time/leaving_timeで渡す
